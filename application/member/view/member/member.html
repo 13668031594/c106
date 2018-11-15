@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>会员</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/res/css/common.css"/>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+</head>
+
+<div class="layui-fluid">
+
+    <div class="layui-row m-breadcrumb">
+        <span class="layui-breadcrumb" lay-separator="/">
+          <a href="javascript:;">首页</a>
+          <a href="javascript:;">会员列表</a>
+          <a><cite>{if isset($member)}编辑{else /}添加{/if}</cite></a>
+        </span>
+    </div>
+
+    <form class="layui-form" action="/member">
+        <div class="layui-form-min">
+
+            <!-- 编辑时写入id -->
+            {if isset($member)}
+            <input type='hidden' name='id' id='id' value='{$member["id"]}'/>
+            {/if}
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">推荐人账号</label>
+                {if isset($member)}
+                <div class="layui-form-mid">{$member["referee_account"]}</div>
+                {else /}
+                <div class="layui-input-inline">
+                    <input type="text" name="referee_account" lay-verify="nullPhone" title="推荐人"
+                           placeholder="请填写正确的推荐人账号"
+                           autocomplete="off" class="layui-input" maxlength="11">
+                </div>
+                <div class="layui-form-mid layui-word-aux">推荐人的账号,没有留空</div>
+                {/if}
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">账号</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="account" lay-verify="phone" title="账号" placeholder="请输入会员帐号"
+                           autocomplete="off"
+                           class="layui-input" value='{if isset($member)}{$member["account"]}{/if}' maxlength="11" {if
+                           isset($member)}readonly{/if} />
+                </div>
+                <div class="layui-form-mid layui-word-aux">登录时的帐号</div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">昵称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="nickname" required lay-verify="required" placeholder="请输入会员昵称"
+                           autocomplete="off" class="layui-input" value='{if isset($member)}{$member["nickname"]}{/if}'>
+                </div>
+                <div class="layui-form-mid layui-word-aux">显示的昵称名字</div>
+            </div>
+
+            <div class="layui-form-item">
+
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-inline" style="width:80px;">
+                        <select name="status" lay-verify="">
+                            <option value="0" {if isset($member) && ($member[
+                            'status'] == 0)}selected{/if}>正常</option>
+                            <option value="1" {if isset($member) && ($member[
+                            'status'] == 1)}selected{/if}>冻结</option>
+                            <option value="2" {if isset($member) && ($member[
+                            'status'] == 2)}selected{/if}>禁用</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width:55px;">身份</label>
+                    <div class="layui-input-inline" style="width:100px;">
+                        <select name="identify" lay-verify="">
+                            <option value="0" {if isset($member) && ($member[
+                            'identify'] == 0)}selected{/if}>非会员</option>
+                            <option value="1" {if isset($member) && ($member[
+                            'identify'] == 1)}selected{/if}>会员</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {if isset($member)}
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <blockquote class="layui-elem-quote">如不修改密码，请勿操作密码</blockquote>
+                </div>
+            </div>
+            {/if}
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">登录密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="password" required lay-verify="pass" placeholder="请输入管理员密码"
+                           autocomplete="off" class="layui-input"
+                           value='{if isset($member)}w!c@n#m$b%y^{else /}123456{/if}' maxlength="20">
+                </div>
+                <div class="layui-form-mid layui-word-aux">初始密码为：123456</div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">支付密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="pay_pass" required lay-verify="pass" placeholder="请输入管理员密码"
+                           autocomplete="off" class="layui-input"
+                           value='{if isset($member)}w!c@n#m$b%y^{else /}123456{/if}' maxlength="20">
+                </div>
+                <div class="layui-form-mid layui-word-aux">初始密码为：123456</div>
+            </div>
+
+        </div>
+        <hr>
+
+        {if isset($member)}
+        <div class="layui-form-min">
+            <div class="layui-form-item">
+                <label class="layui-form-label">注册时间</label>
+                <div class="layui-form-mid">{$member['created_at']}</div>
+            </div>
+        </div>
+        {/if}
+        <div class="layui-form-min">
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" id='submit' lay-submit lay-filter="*">确认保存</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/static/res/js/common/'
+    }).use(['mForm', 'layer', 'jquery', 'element']); //加载入口
+</script>
+</body>
+
+</html>

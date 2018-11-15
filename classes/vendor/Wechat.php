@@ -1,0 +1,257 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yangyang
+ * Date: 2018/11/15
+ * Time: 下午5:02
+ */
+
+namespace classes\vendor;
+
+
+class Wechat
+{
+    //微信接口地址
+    protected $wechat_url = 'https://api.weixin.qq.com';
+
+    //通行证缓存名称
+    protected $cache_name = 'item\Wechat\token';
+
+    //公众号id
+    protected $appid  = 'wxf5dce90eea5f9fef';
+
+    //公众号密码
+    protected $secret = 'f8c075ccf1457a63b30f2f2a74dd8c44';
+
+    //加密密匙，随机生成
+    protected $EncodingAESKey = 'M6T1OclkiLeUWXZMIj7rkG1YxisUKXnZ';
+
+    //商户号
+    protected $wechat_id = '1508961381';
+
+    //票据
+    protected $access_token;
+
+    private $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+
+    private $set;
+
+    public $time;
+
+    /**
+     * 公众号支付
+     *
+     * @param $order
+     * @return mixed
+     */
+    public function jsapi($order)
+    {
+        //进行配置
+        self::set($order, 'JSAPI');
+
+        //加入openid
+        $this->set['openid'] = $order['openid'];
+
+        return self::wechat_pay_set();
+    }
+
+    public function wechat_pay_set()
+    {
+        //配置签名
+        $this->set['sign'] = self::sign($this->set);
+
+        //进行支付
+        $result = self::pay();
+
+        //反馈
+        return $result;
+    }
+
+    /**
+     * 进行配置
+     *
+     * @param $order
+     * @param $trade_type
+     */
+    private function set($order, $trade_type)
+    {
+        //判断订单信息
+        if (!isset($order['body']) || is_null($order['body'])) exit('请传入订单标题');
+        if (!isset($order['out_trade_no']) || is_null($order['out_trade_no'])) exit('请传入订单号');
+        if (!isset($order['total_fee']) || is_null($order['total_fee'])) exit('请传入订单金额');
+        if (!isset($order['order_type']) || is_null($order['order_type'])) exit('请传入订单类型');
+
+        $this->time = time();
+
+        $set = [
+            'appid' => $this->appid,
+            'mch_id' => $this->wechat_id,
+            'nonce_str' => md5($this->time . rand(000, 999)),
+            'body' => $order['body'],
+            'out_trade_no' => $order['out_trade_no'],
+            'total_fee' => $order['total_fee'],
+            'spbill_create_ip' => '14.111.54.177',
+            'notify_url' => 'http://c106.tp/wechat-notify-' . $order['order_type'],
+            'trade_type' => $trade_type,
+        ];
+
+        $this->set = $set;
+    }
+
+    /**
+     * 生成签名
+     *
+     * @param $set
+     * @return string
+     */
+    private function sign($set)
+    {
+        //排序
+        ksort($set, SORT_STRING);
+
+        return self::sign_implode($set);
+    }
+
+    /**
+     * 生成签名方法
+     *
+     * @param $set
+     * @return string
+     */
+    private function sign_implode($set)
+    {
+        //初始化字符串
+        $stringArray = [];
+
+        //循环组合字符串
+        foreach ($set as $k => $v) {
+
+            $str = $k . '=' . $v;
+
+            $stringArray[] = $str;
+        }
+
+        $stringA = implode('&', $stringArray);
+
+        $stringSignTemp = $stringA . '&key=' . $this->EncodingAESKey;//拼接
+
+        $sign = md5($stringSignTemp);//加密
+        $sign = strtoupper($sign);//大写
+
+        //反馈
+        return $sign;
+    }
+
+    /**
+     * 访问微信支付客户端
+     *
+     * @return mixed
+     */
+    private function pay()
+    {
+        $set = self::array_to_xml($this->set);
+
+        $result = self::url_post($this->url, $set);
+
+        $result = self::xml_to_array($result);
+
+        return $result;
+    }
+
+    /**
+     * 格式转换，array转xml
+     *
+     * @param $array
+     * @return string
+     */
+    protected function array_to_xml($array)
+    {
+        $xml = "<xml>\n";
+
+        foreach ($array as $key => $val) {
+
+            if (is_array($val)) {
+
+                $xml .= "<" . $key . ">" . self::array_to_xml($val) . "</" . $key . ">\n";
+            } else {
+
+                $xml .= "<" . $key . ">" . $val . "</" . $key . ">\n";
+            }
+        }
+
+        $xml .= "</xml>";
+
+        return $xml;
+    }
+
+    /**
+     * 访问url，post
+     *
+     * @param $url
+     * @param $post_data
+     * @param int $timeout
+     * @return mixed
+     */
+    protected function url_post($url, $post_data, $timeout = 5)
+    {
+        /*$ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        if ($post_data != '') {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+//            curl_setopt($ch, CURLOPT_SAFE_UPLOAD, false);
+        }
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+//        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//https路径必填参数
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);//https路径必填参数
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);//https路径必填参数
+        $file_contents = curl_exec($ch);
+        curl_close($ch);
+        return $file_contents;*/
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+//        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        return $output;
+    }
+
+    /**
+     * 格式转换，xml转array
+     *
+     * @param $xml
+     * @return mixed
+     */
+    protected function xml_to_array($xml)
+    {
+        //禁止引用外部xml实体
+        libxml_disable_entity_loader(true);
+        $values = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $values;
+    }
+
+    public function jsapi_sign($result)
+    {
+        $array = [
+            'appId' => $result['appid'],
+            'timeStamp' => $this->time,
+            'nonceStr' => $result['nonce_str'],
+            'package' => 'prepay_id=' . $result['prepay_id'],
+            'signType' => 'MD5',
+        ];
+
+        $array['paySign'] = self::sign($array);
+
+        return $array;
+    }
+}

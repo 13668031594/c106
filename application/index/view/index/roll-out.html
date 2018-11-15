@@ -1,0 +1,47 @@
+{include file="index@Index/header"}
+<body style="background: #f4f4f4;">
+<!-- 顶部 -->
+<div id="header">
+    <div class="header-left">
+        <span class="iconfont icon-fanhui"></span>
+    </div>
+    <div class="header-content">转出</div>
+    <div class="header-right">
+    </div>
+</div>
+
+<!-- 内容 -->
+<div class="content">
+    <form id="forms" action="/index-roll-out" method="post">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">转出账号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" name="account"
+                           value="{if !is_null($out_man)}{$out_man['account']}{/if}" placeholder="请输入转出账号">
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">转出数额</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" name="number" value="" placeholder="请输入转出数额">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-btn">
+            <button class="weui-btn weui-btn_primary" type="submit">确认</button>
+        </div>
+    </form>
+</div>
+
+{include file="index@Index/floor"}
+<script src="/static/member/js/ajax.js"></script>
+<script>
+    $('.icon-fanhui').on('click', function () {
+        location.href = '/';
+    });
+</script>
+
+</html>

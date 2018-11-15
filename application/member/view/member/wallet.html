@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>会员钱包</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/res/css/common.css"/>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+</head>
+
+<div class="layui-fluid">
+
+    <div class="layui-row m-breadcrumb">
+        <span class="layui-breadcrumb" lay-separator="/">
+          <a href="javascript:;">首页</a>
+          <a href="javascript:;">会员列表</a>
+          <a href="javascript:;">{$member['nickname']}</a>
+          <a><cite>钱包</cite></a>
+        </span>
+    </div>
+
+    <form class="layui-form" action="/wallet">
+        <input type="hidden" id="id" name="id" value="{$member['id']}"/>
+        <div class="layui-row">
+            <div class="layui-col-sm5">
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>帐号</td>
+                        <td>{$member['account']}</td>
+                    </tr>
+                    <tr>
+                        <td>昵称</td>
+                        <td>{$member['nickname']}</td>
+                    </tr>
+                    <tr>
+                        <td>状态/身份</td>
+                        <td>
+                            {if $member['status'] == '0'}
+                            <span class="layui-badge layui-badge-rim">非会员</span>
+                            {else /}
+                            <span class="layui-badge layui-bg-cyan">非会员</span>
+                            {/if}
+                            {if $member['identify'] == '0'}
+                            <span class="layui-badge layui-bg-green">正常</span>
+                            {elseif $member['identify'] == '1'}
+                            <span class="layui-badge layui-bg-green">冻结</span>
+                            {else /}
+                            <span class="layui-badge layui-bg-green">停用</span>
+                            {/if}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>激活/资产/累计</td>
+                        <td>{$member['asset_act']}/{$member['asset']}/{$member['asset_all']} <a href="/record/{$member['id']}?type=1" class="layui-btn layui-btn-primary layui-btn-xs">查看</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>积分/累计</td>
+                        <td>{$member['integral']}/{$member['integral_all']} <a href="/record/{$member['id']}?type=2" class="layui-btn layui-btn-primary layui-btn-xs">查看</a></td>
+                    </tr>
+                    <tr>
+                        <td>家谱劵/累计</td>
+                        <td>{$member['jpj']}/{$member['jpj_all']} <a href="/record/{$member['id']}?type=3" class="layui-btn layui-btn-primary layui-btn-xs">查看</a></td>
+                    </tr>
+                    <tr>
+                        <td>注册时间</td>
+                        <td>{$member['created_at']}</td>
+                    </tr>
+                    <tr>
+                        <td>注册方式</td>
+                        {if $member['created_type'] == '0'}
+                        <td>前台</td>
+                        {else /}
+                        <td>后台</td>
+                        {/if}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-col-sm7 layui-anim layui-anim-upbit">
+                <div style="max-width:400px;margin-top:10px;">
+
+                    <!-- 编辑时写入id -->
+                    <!--<input type='hidden' id='id' name="id" value=''/>-->
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">操作类型</label>
+                        <div class="layui-input-block">
+                            <select name="type" lay-filter="type">
+                                <option value="0">资产</option>
+                                <option value="1">积分</option>
+                                <option value="2">家谱劵</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-anim layui-anim-upbit" id="assetTypeContainer">
+                        <label class="layui-form-label">资产类型</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="assetType" value="2" title="激活">
+                            <input type="radio" name="assetType" value="1" title="未激活" checked>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">充值数量</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="number" required title="充值数量" lay-verify="required|number"
+                                   placeholder="请输入充值数量"
+                                   autocomplete="off" class="layui-input" value='0'/>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" id='submit' lay-submit lay-filter="*">立即提交</button>
+                            <!-- <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+</div>
+</form>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/static/res/js/common/'
+    }).use(['mForm', 'layer', 'jquery', 'element', 'form'], function () {
+        var form = layui.form;
+        form.on('select(type)', function (data) {
+            console.log(data);
+            if (data.value == 0) {
+                $("#assetTypeContainer").show();
+            } else {
+                $("#assetTypeContainer").hide();
+            }
+        });
+    });
+</script>
+</body>
+</html>

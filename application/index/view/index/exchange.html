@@ -1,0 +1,111 @@
+{include file="index@Index/header"}
+
+<body style="background: #f4f4f4;">
+<!-- 顶部 -->
+<div id="header">
+    <div class="header-left">
+        <span class="iconfont icon-fanhui"></span>
+    </div>
+    <div class="header-content">转换</div>
+    <div class="header-right">
+    </div>
+</div>
+
+<!-- 内容 -->
+<div class="content">
+    <ul class="integral-info">
+        <li>
+            <p>激活{$webAliasAsset}</p>
+            <p>{$member['asset_act']}</p>
+        </li>
+
+        <li>
+            <p>{$webAliasAsset}</p>
+            <p>{$member['asset']}</p>
+        </li>
+
+        <li>
+            <p>{$webAliasPoint}</p>
+            <p>{$member['integral']}</p>
+        </li>
+
+        <li>
+            <p>{$webAliasJpj}</p>
+            <p>{$member['jpj']}</p>
+        </li>
+    </ul>
+
+    <form id="forms" action="/index-exchange" method="post">
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label" for="x11">
+                <div class="weui-cell__bd">
+                    <p>{$webAliasAsset}转{$webAliasPoint}</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check" id="x11" checked="checked" name="radio" value="1">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+
+            <label class="weui-cell weui-check__label" for="x12">
+                <div class="weui-cell__bd">
+                    <p>{$webAliasAsset}转{$webAliasJpj}</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check" id="x12" name="radio" value="2">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+
+            <label class="weui-cell weui-check__label" for="x13">
+                <div class="weui-cell__bd">
+                    <p>{$webAliasJpj}转{$webAliasAsset}</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check" id="x13" name="radio" value="3">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+
+            <!--<label class="weui-cell weui-check__label" for="x14">
+                <div class="weui-cell__bd">
+                    <p>{$webAliasJpj}转{$webAliasPoint}</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check" id="x14" name="radio" value="4">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>-->
+        </div>
+
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">转换数量</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" name="" value="" placeholder="请输入转换数量">
+                </div>
+            </div>
+            <div class="weui-cells__tips">至少转换数量为100且为100的倍数</div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">支付密码</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="password" name="pay_pass" value="" placeholder="请输入支付密码">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-btn">
+            <button class="weui-btn weui-btn_primary" type="submit">确认</button>
+        </div>
+    </form>
+</div>
+{include file="index@Index/floor"}
+<script src="/static/member/js/ajax.js"></script>
+<script>
+    $('.icon-fanhui').on('click', function(){
+        location.href = '../index.html';
+    });
+</script>
+
+</html>

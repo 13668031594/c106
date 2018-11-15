@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>系统设置</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/res/css/common.css">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="http://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+
+</head>
+
+<div class="layui-fluid">
+
+    <div class="layui-row m-breadcrumb">
+        <span class="layui-breadcrumb" lay-separator="/">
+          <a href="javascript:;">首页</a>
+          <a><cite>系统设置</cite></a>
+        </span>
+    </div>
+    <form class="layui-form" lay-filter="form" action="/setting">
+
+        <input type="hidden" id='webSwitchValue' name="webSwitch" value="{$webSwitch}"/>
+        <input type="hidden" id="userRegisterSwitch" name="userRegisterSwitch" value="{$userRegisterSwitch}"/>
+        <input type="hidden" id="webDaySwitch" name="webDaySwitch" value="{$webDaySwitch}"/>
+
+        <div class="layui-tab layui-tab-card" lay-filter="tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">系统设置</li>
+                <li>会员设置</li>
+                <li>加速设置</li>
+                <li>交易设置</li>
+            </ul>
+            <div class="layui-tab-content">
+                <!-- 系统设置 -->
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form-min">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">开关网站</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" id='webSwitch' lay-filter="webSwitch"
+                                       lay-skin="switch" value="{$webSwitch}"
+                                       lay-text="开启|关闭" {if $webSwitch== 'on'}checked{/if} />
+                            </div>
+                        </div>
+                        <!-- style="display:none" -->
+                        <div id="webClose" class="layui-form-item" {if $webSwitch==
+                        'on'}style="display:none"{/if}>
+                        <label class="layui-form-label">关闭原因</label>
+                        <div class="layui-input-block">
+                            <textarea id="webCloseReason" title="关闭原因" name="webCloseReason" lay-verify="reason"
+                                      placeholder="请输入关闭原因"
+                                      class="layui-textarea">{$webCloseReason}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">日转开关</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-filter="webDaySwitch"
+                                   lay-skin="switch" value="{$webDaySwitch}"
+                                   lay-text="开启|关闭" {if $webDaySwitch== 'on'}checked{/if} />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">日转比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webScale" lay-verify="numberZ" title="日转比例"
+                                   placeholder="积分日转比例" autocomplete="off" value="{$webScale}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">最高10000 = 100%</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">家谱卷兑换</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webAllot" lay-verify="numberZ" title="家谱卷兑换比例"
+                                   placeholder="家谱卷兑换分配" autocomplete="off" value="{$webAllot}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">最高10000 = 100%，100%后不划分到积分</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">现金:家谱劵</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webAjAmount" lay-verify="numberZ" title="现金:家谱劵（现金）"
+                                   placeholder="现金" autocomplete="off" value="{$webAjAmount}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">：</div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webAjJpj" lay-verify="numberZ" title="现金:家谱劵（家谱劵）"
+                                   placeholder="家谱劵" autocomplete="off" value="{$webAjJpj}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">家谱劵:资产</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webJaJpj" lay-verify="numberZ" title="家谱劵:资产（家谱劵）"
+                                   placeholder="家谱劵" autocomplete="off" value="{$webJaJpj}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">：</div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webJaAsset" lay-verify="numberZ" title="家谱劵:资产（资产）"
+                                   placeholder="资产" autocomplete="off" value="{$webJaAsset}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">资产:积分</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webApAsset" lay-verify="numberZ" title="资产:积分（资产）"
+                                   placeholder="资产" autocomplete="off" value="{$webApAsset}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">：</div>
+                        <div class="layui-input-inline">
+                            <input type="text" name="webApIntegral" lay-verify="numberZ" title="资产:积分（积分）"
+                                   placeholder="积分" autocomplete="off" value="{$webApIntegral}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">账户别名</label>
+                        <div class="layui-input-inline" style="width:100px;">
+                            <input type="text" name="webAliasAsset" lay-verify="required" title="资产别名"
+                                   placeholder="资产" autocomplete="off" value="{$webAliasAsset}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">-</div>
+                        <div class="layui-input-inline" style="width:100px;">
+                            <input type="text" name="webAliasPoint" lay-verify="required" title="积分别名"
+                                   placeholder="积分" autocomplete="off" value="{$webAliasPoint}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid">-</div>
+                        <div class="layui-input-inline" style="width:100px;">
+                            <input type="text" name="webAliasJpj" lay-verify="required" title="家谱劵别名"
+                                   placeholder="家谱劵" autocomplete="off" value="{$webAliasJpj}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+
+                    <blockquote class="layui-elem-quote">账户别名：修改后无法更改已经生成的记录中的描述，初期请谨慎填写
+                    </blockquote>
+
+                </div>
+            </div>
+            <!-- 会员设置 -->
+            <div class="layui-tab-item">
+                <div class="layui-form-min">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员注册</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-filter="userRegisterSwitch"
+                                   lay-skin="switch" value="{$userRegisterSwitch}"
+                                   lay-text="开启|关闭" {if $userRegisterSwitch== 'on'}checked{/if} />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">注册送资产1</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userRegisterAsset1" lay-verify="numberZ" title="注册赠资产"
+                                   placeholder="注册赠送资产1数量" autocomplete="off" value="{$userRegisterAsset1}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">注册时赠送的资产，0为不赠送</div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">注册送资产2</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userRegisterAsset2" lay-verify="numberZ" title="注册赠资产（激活）"
+                                   placeholder="注册赠送资产2数量" autocomplete="off" value="{$userRegisterAsset2}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">注册时赠送的资产（激活），0为不赠送</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">升级会员</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userUpgrade" lay-verify="numberZ" title="升级会员所需积分"
+                                   placeholder="升级会员所需积分" autocomplete="off" value="{$userUpgrade}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">累计积分达到该值后，自动升级为会员</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">非会员直推</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userIntroduceNot" lay-verify="numberZ" title="非会员直推比例"
+                                   placeholder="非会员直推比例" autocomplete="off" value="{$userIntroduceNot}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">佣金比例，最高10000 = 100%</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">会员直推</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userIntroduce" lay-verify="numberZ" title="会员直推比例"
+                                   placeholder="会员直推比例" autocomplete="off" value="{$userIntroduce}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">佣金比例，最高10000 = 100%</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分佣衰减</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="userCommissDecay" lay-verify="numberZ" title="分佣衰减"
+                                   placeholder="分佣衰减" autocomplete="off" value="{$userCommissDecay}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">最高10000 = 100%</div>
+                    </div>
+
+                    <blockquote class="layui-elem-quote">分佣衰减：填写6000，本人佣金100，上级获得100的60%，即60佣金；上级的上级获得60的60%，即36佣金
+                    </blockquote>
+                </div>
+            </div>
+            <!-- 加速设置 -->
+            <div class="layui-tab-item">
+
+                <div class="layui-form-min">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">加速上限</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="speedMax" lay-verify="numberZ" title="加速上限"
+                                   placeholder="会员加速上限" autocomplete="off" value="{$speedMax}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">最高10000 = 100%</div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">加速比例</label>
+                        <div class="layui-form-mid layui-word-aux">积分</div>
+                        <div class="layui-input-inline" style="width: 100px;">
+                            <input type="text" name="speedAmount" lay-verify="numberZ" title="加速比例-积分"
+                                   placeholder="积分" autocomplete="off" value="{$speedAmount}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">比例</div>
+                        <div class="layui-input-inline"  style="width: 100px;">
+                            <input type="text" name="speedAllot" lay-verify="numberZ" title="加速比例-比例"
+                                   placeholder="比例" autocomplete="off" value="{$speedAllot}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <blockquote class="layui-elem-quote">加速比例，积分填写1000，比例填写100=1% ，则每1000积分加速1%；如1500积分加速同样为1%
+                </blockquote>
+            </div>
+            <!-- 交易设置 -->
+            <div class="layui-tab-item">
+                <div class="layui-form-min">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">激活比例</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="payActAllot" lay-verify="numberZ" title="激活比例"
+                                   placeholder="激活资产支付比例" autocomplete="off" value="{$payActAllot}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">如设置2000，则激活1000资产需支付20%</div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">收付款基数</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="payActBase" lay-verify="numberZ" title="收付款基数"
+                                   placeholder="收付款基数" autocomplete="off" value="{$payActBase}"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">如设置100，那就至少100且为100的倍数</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+</div>
+<button id='submit' class="layui-btn" lay-filter="*" lay-submit>保存</button>
+</form>
+</div>
+
+<script src="/static/layui/layui.js"></script>
+<script>
+
+    /*
+        所有涉及比例数字的字段全部为正整数且必填可以为0
+
+        资产别名
+        webAliasAsset
+        积分别名
+        webAliasPoint
+        家谱劵别名
+        webAliasJpj
+
+        激活资产支付比例
+        payActAllot: "3"
+        加速比例-比例
+        speedAllot: "3"
+        加速比例-金额
+        speedAmount: "2"
+        会员加速上限
+        speedMax: "1"
+        分佣衰减
+        userCommissDecay: "6"
+        会员直推
+        userIntroduce: "5"
+        非会员直推
+        userIntroduceNot: "4"
+        注册送资产-未激活
+        userRegisterAsset1: "1"
+        注册送资产-激活
+        userRegisterAsset2: "2"
+        开启会员注册
+        userRegisterSwitch: "on"
+        会员升级所需积分
+        userUpgrade: "3"
+        资产转家谱劵-资产
+        webAjAmount: "3"
+        资产转家谱劵-家谱劵
+        webAjJpj: "8"
+        复投/出售 分配的资产比例
+        webAllot: "2"
+        资产转积分-资产
+        webApAsset: "5"
+        资产转积分-积分
+        webApIntegral: "6"
+        网站关闭理由
+        webCloseReason: ""
+        家谱劵转资产-资产
+        webJaAsset: "7"
+        家谱劵转资产-家谱劵
+        webJaJpj: "4"
+        日转比例
+        webScale: "1"
+        网站开关
+        webSwitch: "on"
+    */
+
+    layui.config({
+        base: '/static/res/js/common/'
+    }).use(['mForm', 'layer', 'jquery', 'element'], function () {
+
+        var element = layui.element;
+        var form = layui.form;
+        var layer = layui.layer;
+
+        form.verify({
+
+            reason: function (value, item) {
+                if (!$("#webSwitch").prop('checked') && !value) {
+                    return '请填写关闭网站理由';
+                }
+            }
+        });
+
+        form.on('switch(webSwitch)', function (data) {
+            if (data.elem.checked) {
+                $('#webClose').hide();
+                $('#webSwitchValue').prop('value', 'on');
+            } else {
+                $('#webClose').show();
+                $('#webSwitchValue').prop('value', 'off');
+            }
+        });
+
+        form.on('switch(userRegisterSwitch)', function (data) {
+            if (data.elem.checked) {
+                $('#userRegisterSwitch').prop('value', 'on');
+            } else {
+                $('#userRegisterSwitch').prop('value', 'off');
+            }
+        });
+
+        form.on('switch(webDaySwitch)', function (data) {
+            if (data.elem.checked) {
+                $('#webDaySwitch').prop('value', 'on');
+            } else {
+                $('#webDaySwitch').prop('value', 'off');
+            }
+        });
+    });
+</script>
+</body>
+</html>
