@@ -4,10 +4,10 @@ composer.lock
 thinkphp
 .DS_Store
 /files/*
-!/files/
+!/files
 /public/adv_image/*
-!/public/adv_image/
+!/public/adv_image
 /public/asset_in/*
-!/public/asset_in/
+!/public/asset_in
 /public/asset_out/*
-!/public/asset_out/
+!/public/asset_out
