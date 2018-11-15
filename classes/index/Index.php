@@ -57,7 +57,7 @@ class Index extends FirstClass
         return view($view, $data);
     }
 
-    public function header2($top = 'TD众筹', $array = [])
+    public function header2($top = '众筹', $array = [])
     {
         //获取公告
         $model = new Notice();

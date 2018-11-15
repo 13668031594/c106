@@ -74,7 +74,7 @@ class Personal extends Controller
     //分享
     public function share()
     {
-        $route = '/index-register?referee_account=' . $this->class->member['account'];
+        $route = '/index-reg?referee_account=' . $this->class->member['account'];
 
         $url = $this->class->make_qr('share', $route);
 

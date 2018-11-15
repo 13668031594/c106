@@ -36,7 +36,7 @@ class Index extends Controller
     //首页
     public function index()
     {
-        $result = $this->class->header2('TD众筹');
+        $result = $this->class->header2('众筹');
 
         $result['first_login'] = session('first_login');
 
