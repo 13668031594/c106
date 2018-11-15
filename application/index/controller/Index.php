@@ -38,6 +38,10 @@ class Index extends Controller
     {
         $result = $this->class->header2('TD众筹');
 
+        $result['first_login'] = session('first_login');
+
+        session('first_login', null);
+
         return $this->class->view('index', $result);
     }
 
@@ -160,6 +164,6 @@ class Index extends Controller
     {
         $result['member'] = $this->class->member;
 
-        return $this->class->view('exchange',$result);
+        return $this->class->view('exchange', $result);
     }
 }

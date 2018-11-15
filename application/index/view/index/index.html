@@ -16,8 +16,7 @@
     <li><a href="/index-exchange"><span class="iconfont icon-zhuanhuan" style="font-size: 2.1rem;"></span>转换</a></li>
 </ul>
 
-{if session('first_login') == '1'}
-{session('first_login',null)}
+{if $first_login == '1'}
 <!-- 红包 -->
 <div class="draw-gift">
     <div class="draw-img">
