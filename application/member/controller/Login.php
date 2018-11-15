@@ -84,6 +84,6 @@ class Login extends Controller
 
         session('errors', ['注册成功']);
 
-        $this->redirect('/index-login');
+        return $this->class->success();
     }
 }
