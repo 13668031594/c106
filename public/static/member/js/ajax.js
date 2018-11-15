@@ -68,8 +68,17 @@ function after(){
 
 //成功请求后回调函数
 function callback(resp){
-    if( resp && resp.data.status == 'success' ){
-
+    if( resp && resp.status == 'success' ){
+        $.alert(resp.message);
+        if( resp.url && resp.url != '' ){
+            window.location.href = resp.url;
+        }
+    }else{
+        if( resp.code == '999' ){
+            $.alert('登录失效');
+            window.location.href = '/index-login';
+        }else{
+            $.alert(resp.message);
+        }
     }
-    $.alert(resp.data.message, '提示');
 }

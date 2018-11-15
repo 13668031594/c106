@@ -177,7 +177,8 @@ class Member extends FirstClass implements ListInterface
      */
     private function referee_add(\app\member\model\Member $member)
     {
-        if (!is_string(input('referee_account')) || (strlen(input('referee_account')) <= 0)) return $member;
+        $referee_account = input('referee_account');
+        if (empty($referee_account)) return $member;
 
         $test = new \app\member\model\Member();
         $referee = $test->where('account', '=', input('referee_account'))->find();

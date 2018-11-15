@@ -17,6 +17,13 @@ class Recharge extends FirstClass
 {
     public $member;
 
+    public function __construct()
+    {
+        $this->member = parent::is_login_member();
+
+        if ($this->member['status'] == '1')parent::ajax_exception(000,'您的账号被冻结了');
+    }
+
     //验证下单字段
     public function validator_save()
     {

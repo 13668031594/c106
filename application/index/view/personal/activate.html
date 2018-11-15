@@ -1,88 +1,52 @@
 {include file="index@Index/header"}
 
+
 <body style="background: #f4f4f4;">
 <!-- 顶部 -->
 <div id="header">
     <div class="header-left">
         <span class="iconfont icon-fanhui"></span>
     </div>
-    <div class="header-content">众筹</div>
+    <div class="header-content">资产激活</div>
     <div class="header-right">
     </div>
 </div>
 
 <!-- 内容 -->
 <div class="content">
-    <form id="forms" action="/index-crowd" method="post">
+    <form id="forms" action="" method="">
         <div class="weui-cells weui-cells_form">
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">拥有{$webAliasJpj}</label></div>
+                <div class="weui-cell__hd"><label class="weui-label">现有资产</label></div>
                 <div class="weui-cell__bd">
-                    <span>{$member['jpj']}</span>
+                    <span>{$member['asset']}</span>
                 </div>
             </div>
 
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">现金:{$webAliasJpj}</label></div>
+                <div class="weui-cell__hd"><label class="weui-label">激活资产</label></div>
                 <div class="weui-cell__bd">
-                    <span>{$webAjAmount}:{$webAjJpj}</span>
-                    <input type="hidden" name="webAjAmount" value="{$webAjAmount}">
-                    <input type="hidden" name="webAjJpj" value="{$webAjJpj}">
+                    <input class="weui-input" type="number" name="" value="" placeholder="请输入激活资产">
                 </div>
             </div>
-
-            <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">众筹金额</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input num" type="number" name="amount" value="" placeholder="请输入众筹金额">
-                </div>
-            </div>
-
-            <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">支付密码</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input pass" type="password" name="pay_pass" value="" placeholder="请输入支付密码">
-                </div>
-            </div>
-        </div>
-
-        <div class="agreement">
-            <label for="weuiAgree" class="weui-agree">
-                <input id="weuiAgree" type="checkbox" class="weui-agree__checkbox" name=""/>
-                <span class="weui-agree__text">阅读并同意</span>
-            </label>
-            <a href="javascript:;" class="open-popup" data-target="#agreement">《相关协议》</a>
         </div>
 
         <div class="form-btn">
-            <button class="weui-btn weui-btn_primary" type="submit">提交</button>
+            <button class="weui-btn weui-btn_primary" type="submit">确认</button>
         </div>
     </form>
-
-    <!-- 协议 -->
-    <div id="agreement" class="weui-popup__container">
-        <div class="weui-popup__overlay"></div>
-        <div class="weui-popup__modal">
-            {$content}
-
-            <div class="pop-btn">
-                <button type="button" class='weui-btn weui-btn_plain-primary close-popup'>关闭</button>
-            </div>
-        </div>
-    </div>
 </div>
 {include file="index@Index/floor"}
+
 <script src="/static/member/js/ajax.js"></script>
 <script>
     $('.icon-fanhui').on('click', function(){
-        location.href = '/';
+        location.href = '/index-personal';
     });
 
     $('#forms').off('submit').on('submit', function(){
         var str = '';
-        if( $('.num').val() == '' ) str += '请输入众筹{$webAliasJpj}数量 ';
-        if( $('.pass').val() == '' ) str += '请输入支付密码 ';
-        if( !$('#weuiAgree').is(':checked') ) str += '请阅读并同意相关协议 ';
+        if( $('.num').val() == '' ) str += '请输入激活资产数量 ';
         if( str == '' ){
             Ajax($(this), deal);
         }else{
@@ -92,18 +56,7 @@
     });
 
     function deal( resp ){
-        if( resp && resp.status == 'success' ){
-            console.log('提交支付');
-            return false;
-            wechat_data = Object.assign({}, wechat_data, resp.message);
-        }else{
-            if( resp.code == '999' ){
-                $.alert('登录失效');
-                window.location.href = '/index-login';
-            }else{
-                $.alert(resp.message);
-            }
-        }
+        console.log('123');
     }
 
     var wechat_data = {};
@@ -145,7 +98,7 @@
                             console.log('data', resp);
                             if( resp && resp.data.status == 'success' ){
                                 clearInterval(getStatus);
-                                $.alert('支付成功！');
+                                $.alert('操作成功！');
                             }
                         },
                         error: function (data) {

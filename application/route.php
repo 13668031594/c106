@@ -110,6 +110,8 @@ Route::get('attendance-table', 'attendance/Attendance/table');
 Route::get('index-login', 'member/Login/view');
 Route::post('index-login', 'member/Login/login');
 Route::get('index-logout', 'member/Login/logout');
+Route::get('index-reg', 'member/Login/reg');
+Route::post('index-reg', 'member/Login/register');
 
 //首页
 Route::get('/', 'index/Index/index');//首页
@@ -124,8 +126,21 @@ Route::get('index-information-info/:id', 'index/Index/information_info');//文�
 Route::get('index-crowd', 'index/Index/crowd');//众筹
 Route::post('index-crowd', 'index/Recharge/save');//众筹-统一下单
 Route::get('index-financial', 'index/Index/financial');//财务
+Route::get('index-financial-table', 'index/Index/financial_table');//财务-翻页
 Route::get('index-shift-to-qr', 'index/Index/shift_to_qr');//转入二维码
 Route::get('index-roll-out/:id', 'index/Index/roll_out');//转出
 Route::post('index-roll-out', 'index/Assetchange/asset_out');//转出
 Route::get('index-exchange', 'index/Index/exchange');//转换
 Route::post('index-exchange', 'index/Assetchange/exchange');//转换
+
+//个人中心
+Route::get('index-personal','index/Personal/personal');
+Route::get('index-self','index/Personal/self');
+Route::post('index-self','index/Personal/nickname');
+Route::get('index-password','index/Personal/pass');
+Route::post('index-password','index/Personal/password');
+Route::get('index-pay-pass','index/Personal/pay_pass');
+Route::post('index-pay-pass','index/Personal/pay_password');
+Route::get('index-share','index/Personal/share');
+Route::get('index-act','index/Personal/act');
+Route::post('index-act','index/Personal/acted');

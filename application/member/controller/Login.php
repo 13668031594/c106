@@ -3,6 +3,7 @@
 namespace app\member\controller;
 
 use think\Controller;
+use think\Db;
 use think\Request;
 
 class Login extends Controller
@@ -56,5 +57,27 @@ class Login extends Controller
 
         //调用view方法
         return self::view();
+    }
+
+    //注册页面
+    public function reg()
+    {
+        $account = input('referee_account');
+
+        return $this->class->view('register', ['referee_account' => $account]);
+    }
+
+    //注册会员
+    public function register()
+    {
+        Db::startTrans();
+        $this->class->validator_reg();
+        $member = $this->class->reg();
+        $this->class->reg_reward($member);
+        Db::commit();
+
+        session('errors', ['注册成功']);
+
+        $this->redirect('/index-login');
     }
 }

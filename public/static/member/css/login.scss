@@ -11,20 +11,20 @@ body {
 //登录背景动画
 @include keyframes(backgroundChange) {
     0% {
-        background: url('../images/login/01.jpg') no-repeat center;
-        @include background-size(100%);
+        background: url('../images/login/1.jpg') no-repeat center;
+        @include background-size(auto 100%);
     }
     33% {
-        background: url('../images/login/02.jpg') no-repeat center;
-        @include background-size(100%);
+        background: url('../images/login/2.jpg') no-repeat center;
+        @include background-size(auto 100%);
     }
     66% {
-        background: url('../images/login/03.jpg') no-repeat center;
-        @include background-size(100%);
+        background: url('../images/login/3.jpg') no-repeat center;
+        @include background-size(auto 100%);
     }
     100% {
-        background: url('../images/login/01.jpg') no-repeat center;
-        @include background-size(100%);
+        background: url('../images/login/1.jpg') no-repeat center;
+        @include background-size(auto 100%);
     }
 }
 

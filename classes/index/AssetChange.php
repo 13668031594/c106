@@ -24,7 +24,9 @@ class AssetChange extends FirstClass
 
     public function __construct()
     {
-        $this->member = parent::is_login_member(2);
+        $this->member = parent::is_login_member();
+
+        if ($this->member['status'] == '1')parent::ajax_exception(000,'您的账号被冻结了');
     }
 
     //转出3连

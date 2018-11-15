@@ -171,4 +171,85 @@ class Index extends FirstClass
 
         return $member->getData();
     }
+
+    //修改昵称
+    public function nickname()
+    {
+        $rule = [
+            'nickname' => 'require|min:1|max:48'
+        ];
+
+        $file = [
+            'nickname' => '昵称',
+        ];
+
+        $result = parent::validator(input(), $rule, [], $file);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        $member['id'] = $this->member['id'];
+        $member['nickname'] = input('nickname');
+        $model = new \app\member\model\Member();
+        $model->saveAll([$member]);
+
+    }
+
+    //修改登录密码
+    public function password()
+    {
+        $rule = [
+            'old' => 'require|min:6|max:20',
+            'new' => 'require|min:6|max:20',
+            'again' => 'require|min:6|max:20'
+        ];
+
+        $file = [
+            'old' => '旧密码',
+            'new' => '新密码',
+            'again' => '确认密码',
+        ];
+
+        $result = parent::validator(input(), $rule, [], $file);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        $old = input('old');
+        $new = input('new');
+        $again = input('again');
+        if ($new != $again) parent::ajax_exception(000, '确认密码输入错误');
+        if (md5($old) != $this->member['password']) parent::ajax_exception(000, '旧密码输入错误');
+
+        $member['id'] = $this->member['id'];
+        $member['password'] = md5($new);
+        $model = new \app\member\model\Member();
+        $model->saveAll([$member]);
+    }
+
+    //修改支付密码
+    public function pay_pass()
+    {
+        $rule = [
+            'old' => 'require|min:6|max:20',
+            'new' => 'require|min:6|max:20',
+            'again' => 'require|min:6|max:20'
+        ];
+
+        $file = [
+            'old' => '旧密码',
+            'new' => '新密码',
+            'again' => '确认密码',
+        ];
+
+        $result = parent::validator(input(), $rule, [], $file);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        $old = input('old');
+        $new = input('new');
+        $again = input('again');
+        if ($new != $again) parent::ajax_exception(000, '确认密码输入错误');
+        if (md5($old) != $this->member['pay_pass']) parent::ajax_exception(000, '旧密码输入错误');
+
+        $member['id'] = $this->member['id'];
+        $member['pay_pass'] = md5($new);
+        $model = new \app\member\model\Member();
+        $model->saveAll([$member]);
+    }
 }

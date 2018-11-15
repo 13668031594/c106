@@ -14,8 +14,6 @@ class Recharge extends Controller
         parent::__construct($request);
 
         $this->class = new \classes\index\Recharge();
-
-        $this->class->member = $this->class->is_login_member();
     }
 
     public function save()

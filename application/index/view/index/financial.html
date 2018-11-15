@@ -41,6 +41,7 @@
         <!-- 一项结束 -->
         {/foreach}
     </div>
+    <input type="hidden" id="type" value="{$type}"/>
 </div>
 
 <!-- 加载 -->
@@ -63,26 +64,29 @@
     $(document.body).infinite().on("infinite", function () {
         if (loading && !stop) {
             loading = false;
+            console.log('type', $('#type').val());
             $.ajax({
                 type: 'get',
-                url: '',
+                url: '/index-financial-table?type=' + $('#type').val() + '&page=' + page,
                 dataType: 'json',
                 beforeSend: function () {
                     $('.weui-loadmore').show();
                 },
                 success: function (resp) {
-                    console.log('data', resp);
-                    if (resp && resp.data.status == 'success') {
-                        var list = resp.data.test;
-                        all = resp.data.test.page;
-                        var str = '';
-                        $(list).forEach(function (i) {
-                            str += '<div class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__bd">' +
-                                '<div class="list-author-time"><div class="list-author"><span>操作人：</span><span>' + i.man + '</span></div>' +
-                                '<div class="list-time"><span>时间：</span><span>' + i.time + '</span></div></div>' +
-                                '<p class="weui-media-box__desc">' + i.content + '</p></div></div>';
-                        });
-                        $(".weui-panel__bd").append(str);
+                    //console.log('data', resp);
+                    if (resp && resp.status == 'success') {
+                        var list = resp.message;
+                        all = Math.ceil(Number(resp.total)/20);
+                        if( list.length > 0 ){
+                            var str = '';
+                            list.forEach(function (i) {
+                                str += '<div class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__bd">' +
+                                    '<div class="list-author-time"><div class="list-author"><span>操作类型：</span><span>' + i.type + '</span></div>' +
+                                    '<div class="list-time"><span>时间：</span><span>' + i.created_at + '</span></div></div>' +
+                                    '<p class="weui-media-box__desc">' + i.content + '</p></div></div>';
+                            });
+                            $(".weui-panel__bd").append(str);
+                        }
                         page++;
                         if (page > all) {
                             stop = true;
@@ -90,7 +94,12 @@
                             $('.not-more').show();
                         }
                     } else {
-                        $.alert(resp.data.message);
+                        if( resp.code == '999' ){
+                            $.alert('登录失效');
+                            window.location.href = '/index-login';
+                        }else{
+                            $.alert(resp.message);
+                        }
                     }
                 },
                 error: function (data) {
@@ -99,7 +108,6 @@
                 }
             });
         }
-        ;
     });
 
 </script>

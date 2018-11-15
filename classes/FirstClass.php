@@ -87,7 +87,7 @@ class FirstClass
      * @param int $status
      * @return Member|array|false|\Illuminate\Session\SessionManager|\Illuminate\Session\Store|mixed|\PDOStatement|string|Model
      */
-    public function is_login_member($status = 3)
+    public function is_login_member($status = 2)
     {
 //        return;
         //尝试获取session中的member信息
@@ -112,7 +112,7 @@ class FirstClass
         $member = $member->getData();
 
         //验证状态
-        if ($member['status'] >= $status) self::redirect_exception('/', '您的账号已经被『' . ($status == '2' ? '冻结' : '禁用') . '』');
+        if ($member['status'] >= $status) self::redirect_exception('/', '您的账号已经被『' . ($status == '1' ? '冻结' : '禁用') . '』');
 
         //获取当前ip
         $login_ip = $_SERVER["REMOTE_ADDR"];
