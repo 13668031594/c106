@@ -8,6 +8,7 @@
 
 namespace classes\member;
 
+use app\attendance\model\Attendance;
 use app\member\model\MemberRecord;
 use classes\FirstClass;
 use classes\setting\Setting;
@@ -68,6 +69,84 @@ class Login extends FirstClass
 
         //返回管理员信息
         return $member;
+    }
+
+    //每天首次登录，日转
+    public function first_login(\app\member\model\Member $member)
+    {
+        //没有积分
+        if (empty($member->integral)) return '0';
+
+        //今天已经参加日转
+        $test = new Attendance();
+        $test = $test->where('created_at', '>=', date('Y-m-d') . '00:00:00')->where('member_id', '=', $member->id)->find();
+        if (!is_null($test)) return '0';
+
+        //初始化各种参数
+        $setting = new Setting();
+        $set = $setting->index();
+
+        //会员加速
+        if ($member->identify == '1') {
+
+            $bili = floor($member->integral / $set['speedAmount']) * $set['speedAllot'];//加速比例
+            $bili += $set['webScale'];//叠加基础速率
+            if ($bili > $set['speedMax']) $bili = $set['speedMax'];//不得高于最大速率
+        } else {
+
+            $bili = $set['webScale'];
+        }
+
+        //日转积分
+        $integer = number_format(($member->integral * $bili / 10000), 2, '.', '');
+
+        //没有积分转出
+        if ($integer <= 0) return '0';
+
+        //转换资产
+        $asset = number_format(($integer / $set['webApIntegral'] * $set['webApAsset']), 2, '.', '');
+
+        //没有资产转入
+        if ($asset <= 0) return '0';
+
+        $member->integral -= $integer;
+        $member->asset += $asset;
+        $member->asset_all += $asset;
+        $member->save();
+
+        //赠送记录
+        $record = new MemberRecord();
+        $record->member_id = $member->id;
+        $record->account = $member->account;
+        $record->nickname = $member->nickname;
+        $record->type = 90;
+        $record->created_at = date('Y-m-d H:i:s');
+        $record->asset = $asset;
+        $record->asset_now = $member->asset;
+        $record->asset_act_now = $member->asset_act;
+        $record->asset_all = $member->asset_all;
+        $record->integral = 0 - $integer;
+        $record->integral_now = $member->integral;
+        $record->integral_all = $member->integral_all;
+        $record->content = '每日签到,日转『' . $set['webAliasPoint'] . '』' . $integer . '，获得『' . $set['webAliasAsset'] . '』' . $asset . '，日转速率：' . ($bili / 100) . '%';
+        $record->save();
+
+        $attendance = new Attendance();
+        $attendance->integral = 0 - $integer;
+        $attendance->integral_now = $member->integral;
+        $attendance->asset = $asset;
+        $attendance->asset_now = $member->asset;
+        $attendance->proportion = $set['webApAsset'] . ':' . $set['webApIntegral'];
+        $attendance->conversion = $bili;
+        $attendance->member_id = $member->id;
+        $attendance->member_account = $member->account;
+        $attendance->member_nickname = $member->nickname;
+        $attendance->member_create = $member->getData()['created_at'];
+
+        $attendance->created_at = date('Y-m-d H:i:s');
+        $attendance->save();
+
+        session('first_login','1');
     }
 
     /**

@@ -30,6 +30,8 @@ class Login extends Controller
     //登录方法
     public function login()
     {
+        Db::startTrans();
+
         //验证字段
         $this->class->validator_login();
 
@@ -44,6 +46,10 @@ class Login extends Controller
 
         //保存登陆者session
         $this->class->refresh_login_member($member->id);
+
+        $this->class->first_login($member);
+
+        Db::commit();
 
         //重定向到首页
         $this->redirect('/');

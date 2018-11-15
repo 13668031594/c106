@@ -36,7 +36,7 @@ class Attendance extends FirstClass
             $where['created_at'] = ['<', $endTime];
         }
 
-        $result = parent::page($this->model, null, null, $where);
+        $result = parent::page($this->model, 'created_at', 'desc', $where);
 
         foreach ($result['message'] as &$v)$v['conversion'] = $v['conversion'] / 100 . '%';
 

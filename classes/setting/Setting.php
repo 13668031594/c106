@@ -8,7 +8,6 @@
 
 namespace classes\setting;
 
-
 use classes\FirstClass;
 use classes\vendor\StorageClass;
 
