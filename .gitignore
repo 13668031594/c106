@@ -3,7 +3,11 @@ composer.lock
 *.log
 thinkphp
 .DS_Store
-/files/..
-/public/adv_image/..
-/public/asset_in/..
-/public/asset_out/..
+/files/*
+!/files/
+/public/adv_image/*
+!/public/adv_image/
+/public/asset_in/*
+!/public/asset_in/
+/public/asset_out/*
+!/public/asset_out/
