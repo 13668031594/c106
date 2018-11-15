@@ -126,19 +126,19 @@ class Login extends FirstClass
         $result = parent::validator(input(), $rule, [], $file);
 
         //有错误报告则报错
-        if (!is_null($result)) parent::redirect_exception('/index-reg', $result);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
 
         $pass = input('pass');
         $again = input('again');
 
-        if ($pass != $again) parent::redirect_exception('/index-reg', '确认密码输入错误');
+        if ($pass != $again) parent::ajax_exception(000, '确认密码输入错误');
 
         //初始化模型
         $member = new \app\member\model\Member();
         //尝试获取管理员信息
         $member = $member->where('account', '=', input('account'))->find();
         //获取失败，账密错误
-        if (!is_null($member)) parent::redirect_exception('/index-reg', '账号被占用');
+        if (!is_null($member)) parent::ajax_exception(000, '账号被占用');
     }
 
     /**
@@ -177,7 +177,7 @@ class Login extends FirstClass
 
         $test = new \app\member\model\Member();
         $referee = $test->where('account', '=', input('referee_account'))->find();
-        if (is_null($referee)) parent::redirect_exception('/index-reg', '推广人不存在');
+        if (is_null($referee)) parent::ajax_exception(000, '推广人不存在');
 
         $referee = $referee->getData();
 
