@@ -79,7 +79,7 @@ class Login extends FirstClass
 
         //今天已经参加日转
         $test = new Attendance();
-        $test = $test->where('created_at', '>=', date('Y-m-d') . '00:00:00')->where('member_id', '=', $member->id)->find();
+        $test = $test->where('created_at', '>=', (date('Y-m-d ') . '00:00:00'))->where('member_id', '=', $member->id)->find();
         if (!is_null($test)) return '0';
 
         //初始化各种参数
