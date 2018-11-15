@@ -9,7 +9,6 @@
 namespace classes\member;
 
 use app\member\model\MemberRecord;
-use app\notice\model\Notice;
 use classes\FirstClass;
 use classes\setting\Setting;
 
