@@ -284,6 +284,12 @@ class Index extends FirstClass
         $result = parent::validator(input(), $rule, $message, $file);
         if (!is_null($result)) parent::ajax_exception(000, $result);
 
+        //验证是否有未完结的订单
+        $model = new Active();
+        $test = $model->where('member_id', '=', $this->member['id'])->where('order_status', '=', '10')->order('created_at', 'desc')->find();
+        if (!is_null($test))parent::ajax_exception(00,'您有一个未完结的订单，请完结后再试。');
+
+
         //验证支付密码
         if (md5(input('pay_pass')) != $this->member['pay_pass']) parent::ajax_exception(000, '支付密码错误');
 
