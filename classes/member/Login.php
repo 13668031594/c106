@@ -146,7 +146,7 @@ class Login extends FirstClass
         $attendance->created_at = date('Y-m-d H:i:s');
         $attendance->save();
 
-        session('first_login','1');
+        session('first_login', '1');
     }
 
     /**
@@ -320,5 +320,30 @@ class Login extends FirstClass
         //保存
         $member->save();
         $record->save();
+    }
+
+    //绑定微信id
+    public function wechat_banding($id)
+    {
+        //获取openid
+        $openid = session('openid');
+
+        //没有
+        if (is_null($openid)) return;
+
+        //会员模型
+        $member = new \app\member\model\Member();
+
+        //获取符合条件的会员
+        $member = $member->where('id', '=', $id)->where('wechat_id', '=', null)->find();
+
+        //没有符合条件的会员
+        if (is_null($member)) return;
+
+        //更新微信id
+        $member->wechat_id = $openid;
+
+        //保存
+        $member->save();
     }
 }

@@ -48,7 +48,11 @@ class Login extends Controller
         //保存登陆者session
         $this->class->refresh_login_member($member->id);
 
+        //首次登录
         $this->class->first_login($member);
+
+        //绑定微信
+        $this->class->wechat_banding($member->id);
 
         Db::commit();
 
@@ -78,9 +82,18 @@ class Login extends Controller
     public function register()
     {
         Db::startTrans();
+        //注册验证
         $this->class->validator_reg();
+
+        //注册
         $member = $this->class->reg();
+
+        //注册奖励
         $this->class->reg_reward($member);
+
+        //绑定微信
+        $this->class->wechat_banding($member->id);
+
         Db::commit();
 
         session('errors', ['注册成功']);
@@ -105,7 +118,7 @@ class Login extends Controller
         //赋值openid
         $openid = isset($result['openid']) ? $result['openid'] : null;
 
-        exit($openid);
+//        exit($openid);
 
         //保存openid
         session('openid', $openid);
