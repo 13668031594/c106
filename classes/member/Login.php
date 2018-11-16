@@ -338,10 +338,9 @@ class Login extends FirstClass
 
         //获取符合条件的会员
         $member = $member->where('id', '=', $id)->find();
-        dump($member);
-        exit();
+
         //没有符合条件的会员
-        if (is_null($member)) return;
+        if (is_null($member) || !empty($member->wechat_id)) return;
 
         //更新微信id
         $member->wechat_id = $openid;
