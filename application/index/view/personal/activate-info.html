@@ -95,6 +95,25 @@
         }
     }
 
+    var wechat_test = '{$wechat}';
+    var wechat_data = JSON.parse(wechat_test);
+    var order_id = '{$order["id"]}';
+    var getStatus = null;
+
+    //支付判断是否在微信浏览器内
+    function moneyPay() {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+    }
+
     //微信支付
     function onBridgeReady() {
         //getBrandWCPayRequest();
@@ -105,39 +124,39 @@
                          "package": 'package',              //订单详情
                          "signType": 'signType',            //微信签名方式:
                          "paySign": 'paySign'               //微信签名
-                    }*/wechat_data, (res) = > {
-            //console.log('res', res);
-            if(res.err_msg == "get_brand_wcpay_request:ok"
-    )
-        {
-            //window.location.replace("user_index.html");
-            getStatus = setInterval(() = > {
-                $.ajax({
-                type: 'get',
-                url: '/index-crowd-info/' + order_id,//轮询路由
-                dataType: 'json',
-                success: function (resp) {
-                    //console.log('data', resp);
-                    if (resp && resp.status == 'success') {
-                        clearInterval(getStatus);
-                        $.alert('支付成功！');
-                    }
-                },
-                error: function (data) {
-                    $.toast(data.status, "text");
+                    }*/wechat_data, function(res) {
+                //console.log('res', res);
+                if(res.err_msg == "get_brand_wcpay_request:ok"
+                )
+                {
+                    //window.location.replace("user_index.html");
+                    getStatus = setInterval(function (){
+                            $.ajax({
+                                type: 'get',
+                                url: '/index-act-info/' + order_id,//轮询路由
+                                dataType: 'json',
+                                success: function (resp) {
+                                    //console.log('data', resp);
+                                    if (resp && resp.status == 'success') {
+                                        clearInterval(getStatus);
+                                        $.alert('支付成功！');
+                                    }
+                                },
+                                error: function (data) {
+                                    $.toast(data.status, "text");
+                                }
+                            });
+                        },
+                        3000
+                    )
+                    ;
                 }
-            });
-        },
-            3000
-        )
-            ;
-        }
-        /*else if (res.err_msg == "get_brand_wcpay_request:cancel") {
-                                     alert("取消支付!");
-                                } else {
-                                     alert("支付失败!");
-                                }*/
-    } /*function(res){
+                /*else if (res.err_msg == "get_brand_wcpay_request:cancel") {
+                                             alert("取消支付!");
+                                        } else {
+                                             alert("支付失败!");
+                                        }*/
+            } /*function(res){
                          if(res.err_msg == "get_brand_wcpay_request:ok"){
                               window.location.replace("user_index.html")
                          }else if(res.err_msg == "get_brand_wcpay_request:cancel"){
@@ -146,7 +165,7 @@
                               alert("支付失败!");
                          }
                     }*/
-    )
+        )
         ;
     }
 </script>
