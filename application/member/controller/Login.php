@@ -132,6 +132,10 @@ class Login extends Controller
 
     public function notify_recharge(Request $request)
     {
+        $class = new StorageClass('wechat');
+        $xml = $request->getContent();
+        $class->save($xml);
+        exit;
         try{
 
             Db::startTrans();
