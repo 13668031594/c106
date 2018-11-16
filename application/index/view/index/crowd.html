@@ -159,7 +159,9 @@
                                     if (resp && resp.status == 'success') {
                                         $.hideLoading();
                                         clearInterval(getStatus);
-                                        $.alert('支付成功！');
+                                        $.alert('支付成功！',function () {
+                                            window.location.href = '/';
+                                        });
                                     }
                                 },
                                 error: function (data) {
