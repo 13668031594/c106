@@ -61,9 +61,9 @@ class Recharge extends Controller
         return 'success';
     }
 
-    public function info($order_id)
+    public function info($id)
     {
-        $this->class->info($order_id);
+        $this->class->info($id);
 
         return $this->class->success();
     }
