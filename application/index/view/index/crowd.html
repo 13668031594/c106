@@ -93,9 +93,10 @@
 
     function deal( resp ){
         if( resp && resp.status == 'success' ){
-            console.log('提交支付');
-            return false;
-            wechat_data = Object.assign({}, wechat_data, resp.message);
+            //console.log('提交支付');
+            wechat_data = Object.assign({}, wechat_data, resp.wechat);
+            order_id = resp.order.id;
+            moneyPay();
         }else{
             if( resp.code == '999' ){
                 $.alert('登录失效');
@@ -107,6 +108,7 @@
     }
 
     var wechat_data = {};
+    var order_id = '';
     var getStatus = null;
     //支付判断是否在微信浏览器内
     function moneyPay() {
@@ -139,11 +141,11 @@
                 getStatus = setInterval(() => {
                     $.ajax({
                         type: 'get',
-                        url: '',
+                        url: '/index-crowd-info/' + order_id,
                         dataType: 'json',
                         success: function(resp){
-                            console.log('data', resp);
-                            if( resp && resp.data.status == 'success' ){
+                            //console.log('data', resp);
+                            if( resp && resp.status == 'success' ){
                                 clearInterval(getStatus);
                                 $.alert('支付成功！');
                             }

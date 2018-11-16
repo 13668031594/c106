@@ -90,6 +90,12 @@ class Personal extends Controller
     //激活资产
     public function acted()
     {
-        return $this->class->success();
+        $this->class->validator_act();
+
+        $order = $this->class->act();
+
+        $result = $this->class->act_pay($order);
+
+        return $this->class->success('', null, ['wechat' => $result, 'order' => $order]);
     }
 }

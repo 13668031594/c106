@@ -7,7 +7,7 @@
     <div class="header-left">
         <span class="iconfont icon-fanhui"></span>
     </div>
-    <div class="header-content">资产激活</div>
+    <div class="header-content">{$webAliasAsset}激活</div>
     <div class="header-right">
     </div>
 </div>
@@ -17,16 +17,31 @@
     <form id="forms" action="" method="">
         <div class="weui-cells weui-cells_form">
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">现有资产</label></div>
+                <div class="weui-cell__hd"><label class="weui-label">现有{$webAliasAsset}</label></div>
                 <div class="weui-cell__bd">
                     <span>{$member['asset']}</span>
                 </div>
             </div>
 
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">激活资产</label></div>
+                <div class="weui-cell__hd"><label class="weui-label">支付比例</label></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="number" name="" value="" placeholder="请输入激活资产">
+                    <span>{$payActAllot / 100}%</span>
+                    <input type="hidden" name="payActAllot" value="{$payActAllot}">
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">激活{$webAliasAsset}</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="number" name="number" value="" placeholder="请输入激活{$webAliasAsset}">
+                </div>
+            </div>
+
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">支付密码</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="password" name="pay_pass" value="" placeholder="请输入激活{$webAliasAsset}">
                 </div>
             </div>
         </div>
@@ -46,7 +61,7 @@
 
     $('#forms').off('submit').on('submit', function(){
         var str = '';
-        if( $('.num').val() == '' ) str += '请输入激活资产数量 ';
+        if( $('.num').val() == '' ) str += '请输入激活{$webAliasAsset}数量 ';
         if( str == '' ){
             Ajax($(this), deal);
         }else{

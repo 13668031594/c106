@@ -9,6 +9,7 @@
 namespace classes\index;
 
 
+use app\active\model\Active;
 use app\adv\model\Adv;
 use app\article\model\Article;
 use app\member\model\MemberRecord;
@@ -252,4 +253,114 @@ class Index extends FirstClass
         $model = new \app\member\model\Member();
         $model->saveAll([$member]);
     }
+
+
+    //验证下单字段
+    public function validator_save()
+    {
+        $rule = [
+            'amount' => 'require|integer|between:1,100000000',
+            'pay_pass' => 'require',
+            'payActAllot' => 'require',
+        ];
+
+        $message = [
+            'payActAllot.require' => '请刷新重试',
+        ];
+
+        $file = [
+            'amount' => '激活资产',
+            'pay_pass' => '支付密码'
+        ];
+
+        $result = parent::validator(input(), $rule, $message, $file);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        //验证支付密码
+        if (md5(input('pay_pass')) != $this->member['pay_pass']) parent::ajax_exception(000, '支付密码错误');
+
+        //验证兑换比例
+        $setting = new Setting();
+        $set = $setting->index();
+
+        if ((input('payActAllot') != $set['payActAllot'])) parent::ajax_exception(000, '请刷新重试001');
+    }
+
+    //下单
+    public function save()
+    {
+        //计算获得支付金额
+        $amount = input('amount');
+        $bili1 = input('payActAllot') <= 0 ? 0 : (input('payActAllot') / 10000);
+        $bili2 = input('payActAllot') <= 0 ? 0 : (input('payActAllot') / 100);
+        $total = number_format(($amount * $bili1), 2, '.', '');
+
+        $total = ($total < 1) ? 1 : $total;
+
+        $order = new Active();
+        $order->order_number = self::new_order();
+        $order->total = $total;
+        $order->asset = $amount;
+        $order->proportion = $bili2 . '%';
+        $order->member_id = $this->member['id'];
+        $order->member_account = $this->member['account'];
+        $order->member_nickname = $this->member['nickname'];
+        $order->member_create = $this->member['created_at'];
+        $order->created_at = date('Y-m-d H:i:s');
+        $order->save();
+
+        return $order->getData();
+    }
+
+    //获取新的订单号
+    private function new_order()
+    {
+        $pattern = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';//字幕字符串
+
+        $key = '';
+
+        //再随机2位字幕
+        for ($i = 0; $i < 2; $i++) {
+            $key .= $pattern[rand(0, 25)];    //生成php随机数
+        }
+
+        $key .= time();//时间戳
+
+        //验证订单号是否被占用
+        $test = new \app\recharge\model\Recharge();
+        $test = $test->where('order_number', '=', $test)->find();
+
+        if (!is_null($test)) {
+
+            return self::new_order();
+        } else {
+
+            return $key;
+        }
+    }
+
+    public function pay($order)
+    {
+        if (isset($order['order_status']) && $order['order_status'] != '10') parent::ajax_exception(000, '订单已锁定，无法支付');
+        if (empty($this->member['wechat_id'])) parent::ajax_exception(000, '请从微信公众号重新登录');
+
+        $result = [
+            'body' => '家谱众筹',
+            'out_trade_no' => $order['order_number'] . '_' . time(),//订单号
+//            'total_fee' => ($order['total'] * 100),//金额，精确到分
+            'total_fee' => 1,//金额，精确到分
+            'order_type' => 'recharge',//订单类型，回调路由组成部分
+            'openid' => $this->member['wechat_id']
+        ];
+
+        $class = new Wechat();
+
+        $result = $class->jsapi($result);
+
+        //重新配置并获取微信签名
+        $sign = $class->jsapi_sign($result);
+
+        return $sign;
+    }
+
 }

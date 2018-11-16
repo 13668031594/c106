@@ -4,9 +4,9 @@
   margin: 0px;
   padding: 0px; }
 
-html, body {
-  font-size: 12px; }
-
+/*html,body{
+    font-size: 12px;
+}*/
 a {
   text-decoration: none; }
 
@@ -30,6 +30,18 @@ a, input, button {
 input[type='checkbox'], input[type='radio'] {
   cursor: pointer; }
 
+/******************** width < 360 ******************/
+@media only screen and (max-width: 370px) {
+  html, body {
+    font-size: 10px; } }
+/********************* width > 360 ********************/
+@media only screen and (min-width: 370px) {
+  html, body {
+    font-size: 11px; } }
+/********************* width > 400 ********************/
+@media only screen and (min-width: 400px) {
+  html, body {
+    font-size: 12px !important; } }
 /******************* weui样式替换 *****************/
 .primary {
   color: #fd9109 !important; }
@@ -313,7 +325,7 @@ input[type='checkbox'], input[type='radio'] {
       color: #4f4c8b; }
     .assets .assets-cell .assets-cell-b {
       color: #b00;
-      font-size: 1.5rem; }
+      font-size: 1.2rem; }
 
 .menu {
   display: -webkit-box;
@@ -522,7 +534,7 @@ input[type='checkbox'], input[type='radio'] {
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box; }
       .personal .personal-integral > li > p {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: white;
         text-align: center; }
     .personal .personal-integral > li + li {

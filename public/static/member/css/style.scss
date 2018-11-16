@@ -4,6 +4,29 @@
 @import "common";
 @import "../fonticon/iconfont.css";
 
+
+/******************** width < 360 ******************/
+@media only screen and (max-width: 370px) {
+    html, body{
+        font-size: 10px;
+    }
+}
+
+/********************* width > 360 ********************/
+@media only screen and (min-width: 370px) {
+    html, body{
+        font-size: 11px;
+    }
+}
+
+/********************* width > 400 ********************/
+@media only screen and (min-width: 400px) {
+    html, body{
+        font-size: 12px !important;
+    }
+}
+
+
 /******************* weui样式替换 *****************/
 
 //弹窗按钮颜色
@@ -355,7 +378,7 @@
 
         .assets-cell-b{
             color: #b00;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
     }
 }
@@ -544,7 +567,7 @@
             @include box-sizing;
 
             >p{
-                font-size: 1.3rem;
+                font-size: 1.2rem;
                 color: white;
                 text-align: center;
             }
