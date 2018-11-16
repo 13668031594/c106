@@ -132,10 +132,6 @@ class Login extends Controller
 
     public function notify_recharge(Request $request)
     {
-        $class = new StorageClass('wechat');
-        $xml = $request->getContent();
-        $class->save($xml);
-        exit;
         try{
 
             Db::startTrans();
@@ -148,7 +144,9 @@ class Login extends Controller
 
             //转为array
             $array = $class->xml_to_array($xml);
-
+            $class = new StorageClass('wechat');
+            $class->save(json_encode($array));
+            exit;
             //添加支付记录
             $model = $class->is_pay($array, $xml);
 
