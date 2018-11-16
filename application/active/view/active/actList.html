@@ -126,9 +126,9 @@
                 {field: 'asset', title: '激活资产',width: 150 },
                 {
                     field: 'pay_type', width: 100, title: '付款类型', templet: function (d) {
-                    if (d.payType == 1) {
+                    if (d.pay_type == 1) {
                         return '<span class="layui-badge layui-bg-green">微信</span>'
-                    } else if (d.payType == 2) {
+                    } else if (d.pay_type == 2) {
                         return '<span class="layui-badge layui-bg-orange">后台</span>';
                     } else {
                         return '-';
