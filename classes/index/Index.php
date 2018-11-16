@@ -20,6 +20,7 @@ use classes\set\ContrastArrays;
 use classes\set\LoginSet;
 use classes\setting\PayAgreement;
 use classes\setting\Setting;
+use classes\vendor\Wechat;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class Index extends FirstClass
@@ -256,7 +257,7 @@ class Index extends FirstClass
 
 
     //验证下单字段
-    public function validator_save()
+    public function validator_act()
     {
         $rule = [
             'amount' => 'require|integer|between:1,100000000',
@@ -287,7 +288,7 @@ class Index extends FirstClass
     }
 
     //下单
-    public function save()
+    public function act()
     {
         //计算获得支付金额
         $amount = input('amount');
@@ -339,17 +340,17 @@ class Index extends FirstClass
         }
     }
 
-    public function pay($order)
+    public function act_pay($order)
     {
         if (isset($order['order_status']) && $order['order_status'] != '10') parent::ajax_exception(000, '订单已锁定，无法支付');
         if (empty($this->member['wechat_id'])) parent::ajax_exception(000, '请从微信公众号重新登录');
 
         $result = [
-            'body' => '家谱众筹',
+            'body' => '资产激活',
             'out_trade_no' => $order['order_number'] . '_' . time(),//订单号
 //            'total_fee' => ($order['total'] * 100),//金额，精确到分
             'total_fee' => 1,//金额，精确到分
-            'order_type' => 'recharge',//订单类型，回调路由组成部分
+            'order_type' => 'active',//订单类型，回调路由组成部分
             'openid' => $this->member['wechat_id']
         ];
 

@@ -1,4 +1,4 @@
-<?php
+crowd(1).html<?php
 
 use think\migration\Migrator;
 use think\migration\db\Column;

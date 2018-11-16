@@ -94,6 +94,7 @@
     function deal( resp ){
         if( resp && resp.status == 'success' ){
             //console.log('提交支付');
+            resp.wechat.timeStamp = resp.wechat.timeStamp.toString();
             wechat_data = Object.assign({}, wechat_data, resp.wechat);
             order_id = resp.order.id;
             moneyPay();
