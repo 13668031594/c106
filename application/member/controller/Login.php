@@ -132,8 +132,7 @@ class Login extends Controller
     public function notify_recharge(Request $request)
     {
         $class = new StorageClass('wechat');
-        $class->save('123');
-        exit;
+
         Db::startTrans();
 
         //初始化操作类
@@ -141,7 +140,8 @@ class Login extends Controller
 
         //获取微信回调信息，xml格式
         $xml = $request->getContent();
-
+        $class->save($xml);
+        exit;
         //转为array
         $array = $class->xml_to_array($xml);
 
