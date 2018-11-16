@@ -158,6 +158,7 @@ class Login extends Controller
                 $class->save('1314');
                 //付款成功
                 $this->class->change_recharge($model->order_number);
+                $class->save('1315');
             }
 
             Db::commit();
