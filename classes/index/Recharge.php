@@ -114,7 +114,8 @@ class Recharge extends FirstClass
         $result = [
             'body' => '家谱众筹',
             'out_trade_no' => $order['order_number'] . '_' . time(),//订单号
-            'total_fee' => ($order['total'] * 100),//金额，精确到分
+//            'total_fee' => ($order['total'] * 100),//金额，精确到分
+            'total_fee' => 1,//金额，精确到分
             'order_type' => 'recharge',//订单类型，回调路由组成部分
             'openid' => $this->member['wechat_id']
         ];
