@@ -21,7 +21,7 @@ class Recharge extends FirstClass
     {
         $this->member = parent::is_login_member();
 
-        if ($this->member['status'] == '1')parent::ajax_exception(000,'您的账号被冻结了');
+        if ($this->member['status'] == '1') parent::ajax_exception(000, '您的账号被冻结了');
     }
 
     //验证下单字段
@@ -55,8 +55,6 @@ class Recharge extends FirstClass
         $set = $setting->index();
 
         if ((input('webAjAmount') != $set['webAjAmount']) || (input('webAjJpj') != $set['webAjJpj'])) parent::ajax_exception(000, '请刷新重试001');
-
-
     }
 
     //下单
@@ -68,7 +66,7 @@ class Recharge extends FirstClass
         $order = new \app\recharge\model\Recharge();
         $order->order_number = self::new_order();
         $order->total = input('amount');
-        $order->jpj = number_format($jpj, 2,'.','');
+        $order->jpj = number_format($jpj, 2, '.', '');
         $order->proportion = input('webAjAmount') . ':' . input('webAjJpj');
         $order->member_id = $this->member['id'];
         $order->member_account = $this->member['account'];
@@ -108,7 +106,7 @@ class Recharge extends FirstClass
     public function pay($order)
     {
         if (isset($order['order_status']) && $order['order_status'] != '10') parent::ajax_exception(000, '订单已锁定，无法支付');
-        if (empty($this->member['wechat_id'])) parent::ajax_exception(000, '您未关注微信公众号，请先关注');
+        if (empty($this->member['wechat_id'])) parent::ajax_exception(000, '请从微信公众号重新登录');
 
         $result = [
             'body' => '家谱众筹',
@@ -121,7 +119,6 @@ class Recharge extends FirstClass
         $class = new Wechat();
 
         $result = $class->jsapi($result);
-        dump($result);exit;
 
         //重新配置并获取微信签名
         $sign = $class->jsapi_sign($result);
