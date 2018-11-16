@@ -58,9 +58,11 @@
             success: function (resp) {
                 if (resp && resp.status == 'success') {
                     $.alert('操作成功！');
+                    window.location.href = '/index-crowd';
                 } else {
                     if (resp.code == '999') {
                         $.alert('登录失效');
+
                         window.location.href = '/index-login';
                     } else {
                         $.alert(resp.message);
