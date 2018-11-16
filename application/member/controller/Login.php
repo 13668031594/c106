@@ -7,6 +7,7 @@ use classes\vendor\StorageClass;
 use classes\vendor\Wechat;
 use think\Controller;
 use think\Db;
+use think\Exception;
 use think\Request;
 
 class Login extends Controller
@@ -131,39 +132,44 @@ class Login extends Controller
 
     public function notify_recharge(Request $request)
     {
-        $class = new StorageClass('wechat');
+        try{
 
-        Db::startTrans();
+            Db::startTrans();
 
-        //初始化操作类
-        $class = new Wechat();
+            //初始化操作类
+            $class = new Wechat();
 
-        //获取微信回调信息，xml格式
-        $xml = $request->getContent();
-        $class->save($xml);
-        exit;
-        //转为array
-        $array = $class->xml_to_array($xml);
+            //获取微信回调信息，xml格式
+            $xml = $request->getContent();
 
-        //添加支付记录
-        $model = $class->is_pay($array, $xml);
+            //转为array
+            $array = $class->xml_to_array($xml);
 
-        //判断,已经添加过了
-        if ($model === false) return 'success';
+            //添加支付记录
+            $model = $class->is_pay($array, $xml);
 
-        //判断
-        if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
+            //判断,已经添加过了
+            if ($model === false) return 'success';
 
-            $class = new Recharge();
+            //判断
+            if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
-            //付款成功
-            $class->change($model->order_number);
+                $class = new Recharge();
+
+                //付款成功
+                $class->change($model->order_number);
+            }
+
+            Db::commit();
+
+            //返回微信回调成功
+            return 'success';
+        }catch (Exception $exception){
+
+            $class = new StorageClass('wechat');
+            $class->save($exception->getMessage());
+            exit;
         }
-
-        Db::commit();
-
-        //返回微信回调成功
-        return 'success';
     }
 
     public function notify_active(Request $request)
