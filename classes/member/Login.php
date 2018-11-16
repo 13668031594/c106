@@ -368,7 +368,7 @@ class Login extends FirstClass
         $member = $member->where('id', '=', $recharge->member_id)->find();
         if (is_null($member)) return;
         $member->jpj += $recharge->jpj;
-        $member->jpj_all += $recharge->jpj_all;
+        $member->jpj_all += $member->jpj_all;
         $member->total += $recharge->total;
         $member->save();
 
