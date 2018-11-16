@@ -186,6 +186,6 @@ class Recharge extends FirstClass
     {
         $recharge = new \app\recharge\model\Recharge();
         $recharge = $recharge->where('id', '=', $id)->where('order_status', '=', '10')->find();
-        if (is_null($recharge)) parent::ajax_exception(000, '');
+        if (!is_null($recharge)) parent::ajax_exception(000, '');
     }
 }
