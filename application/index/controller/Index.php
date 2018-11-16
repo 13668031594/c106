@@ -116,10 +116,26 @@ class Index extends Controller
     //众筹
     public function crowd()
     {
-        $result = $this->class->pay_agreement();
-        $result['member'] = $this->class->member;
+        //未完结的订单
+        $test = $this->class->recharge_test();
 
-        return $this->class->view('crowd', $result);
+        //有
+        if (!is_null($test)) {
+
+            $class = new \classes\index\Recharge();
+
+            $recharge = $test->getData();
+
+            $wechat = $class->pay($recharge);
+
+            return $this->class->view('recharge-info', ['order' => $recharge, 'wechat' => json_encode($wechat)]);
+        } else {
+
+            $result = $this->class->pay_agreement();
+            $result['member'] = $this->class->member;
+
+            return $this->class->view('crowd', $result);
+        }
     }
 
     //财务

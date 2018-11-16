@@ -84,7 +84,22 @@ class Personal extends Controller
     //激活资产页面
     public function act()
     {
-        return $this->class->view('activate', ['member' => $this->class->member]);
+        //未完结的订单
+        $test = $this->class->active_test();
+
+        //有
+        if (!is_null($test)) {
+
+            $recharge = $test->getData();
+
+            $wechat = $this->class->act_pay($recharge);
+//dump($recharge);
+            return $this->class->view('activate-info', ['order' => $recharge, 'wechat' => json_encode($wechat)]);
+        } else {
+
+            return $this->class->view('activate', ['member' => $this->class->member]);
+        }
+
     }
 
     //激活资产
@@ -105,5 +120,12 @@ class Personal extends Controller
         $this->class->info($id);
 
         return $this->class->success();
+    }
+
+    public function act_out($id)
+    {
+        $this->class->out($id);
+
+        return $this->class->success('/');
     }
 }

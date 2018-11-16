@@ -84,7 +84,12 @@
         if( $('.pass').val() == '' ) str += '请输入支付密码 ';
         if( !$('#weuiAgree').is(':checked') ) str += '请阅读并同意相关协议 ';
         if( str == '' ){
-            Ajax($(this), deal);
+            $.confirm("确定要执行此操作吗？", function() {
+                //点击确认后的回调函数
+                Ajax($(this), deal);
+            }, function() {
+                //点击取消后的回调函数
+            });
         }else{
             $.alert(str);
         }
@@ -140,6 +145,7 @@
             if (res.err_msg == "get_brand_wcpay_request:ok") {
                 //window.location.replace("user_index.html");
                 getStatus = setInterval(() => {
+                    $.showLoading('');
                     $.ajax({
                         type: 'get',
                         url: '/index-crowd-info/' + order_id,
@@ -148,7 +154,10 @@
                             //console.log('data', resp);
                             if( resp && resp.status == 'success' ){
                                 clearInterval(getStatus);
-                                $.alert('支付成功！');
+                                $.hideLoading();
+                                $.alert('支付成功！', function(){
+                                    location.href = '/';
+                                });
                             }
                         },
                         error: function (data) {

@@ -117,6 +117,14 @@ class Index extends FirstClass
         return $result->getData();
     }
 
+    //检测是否有未完结的直充订单
+    public function recharge_test()
+    {
+        $model = new \app\recharge\model\Recharge();
+
+        return $model->where('member_id', '=', $this->member['id'])->where('order_status', '=', '10')->order('created_at', 'desc')->find();
+    }
+
     //支付协议
     public function pay_agreement()
     {
@@ -332,7 +340,7 @@ class Index extends FirstClass
         $record->created_at = $date;
         $record->integral_now = $member->integral;
         $record->integral_all = $member->integral_all;
-        $record->asset = 0- $amount;
+        $record->asset = 0 - $amount;
         $record->asset_now = $member->asset;
         $record->asset_act_now = $member->asset_act;
         $record->asset_all = $member->asset_all;
@@ -403,4 +411,53 @@ class Index extends FirstClass
         if (!is_null($recharge)) parent::ajax_exception(000, '');
     }
 
+    public function active_test()
+    {
+        $model = new Active();
+
+        return $model->where('member_id', '=', $this->member['id'])->where('order_status', '=', 10)->find();
+    }
+
+    //撤销激活订单
+    public function out($id)
+    {
+        $active = new Active();
+
+        $active = $active->where('id', '=', $id)->find();
+
+        if (is_null($active)) return;
+
+        $setting = new Setting();
+        $set = $setting->index();
+        $date = date('Y-m-d H:i:s');
+
+        $active->order_status = '40';
+        $active->change_id = $this->member['id'];
+        $active->change_nickname = $this->member['nickname'];
+        $active->change_date = $date;
+        $active->save();
+
+        $member = new \app\member\model\Member();
+        $member = $member->where('id','=',$this->member['id'])->find();
+        $member->asset += $active->asset;
+        $member->save();
+
+        //添加会员记录
+        $record = new MemberRecord();
+        $record->member_id = $member->id;
+        $record->account = $member->account;
+        $record->nickname = $member->nickname;
+        $record->type = 30;
+        $record->content = '取消激活订单，返还『' . $set['webAliasAsset'] . '』' . $active->asset;
+        $record->created_at = $date;
+        $record->integral_now = $member->integral;
+        $record->integral_all = $member->integral_all;
+        $record->asset = $active->asset;
+        $record->asset_now = $member->asset;
+        $record->asset_act_now = $member->asset_act;
+        $record->asset_all = $member->asset_all;
+        $record->jpj_now = $member->jpj;
+        $record->jpj_all = $member->jpj_all;
+        $record->save();
+    }
 }

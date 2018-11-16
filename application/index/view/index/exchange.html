@@ -1,4 +1,4 @@
-{include file="index@Index/header"}
+activate.html{include file="index@Index/header"}
 
 <body style="background: #f4f4f4;">
 <!-- 顶部 -->
@@ -105,6 +105,16 @@
 <script>
     $('.icon-fanhui').on('click', function(){
         location.href = '/';
+    });
+
+    $('#forms').off('submit').on('submit', function(){
+        $.confirm("确定要执行此操作吗？", function() {
+            //点击确认后的回调函数
+            Ajax($(this));
+        }, function() {
+            //点击取消后的回调函数
+        });
+        return false;
     });
 </script>
 

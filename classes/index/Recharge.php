@@ -137,4 +137,20 @@ class Recharge extends FirstClass
         $recharge = $recharge->where('id', '=', $id)->where('order_status', '=', '10')->find();
         if (!is_null($recharge)) parent::ajax_exception(000, '');
     }
+
+    //撤销
+    public function out($id)
+    {
+        $recharge = new \app\recharge\model\Recharge();
+
+        $recharge = $recharge->where('id', '=', $id)->find();
+
+        if (is_null($recharge)) return;
+
+        $recharge->order_status = '40';
+        $recharge->change_id = $this->member['id'];
+        $recharge->change_nickname = $this->member['nickname'];
+        $recharge->change_date = date('Y-m-d H:i:s');
+        $recharge->save();
+    }
 }

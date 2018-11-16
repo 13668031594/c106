@@ -35,14 +35,14 @@
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label class="weui-label">激活{$webAliasAsset}</label></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" id="pay-num" type="number" name="amount" value="" placeholder="请输入激活{$webAliasAsset}">
+                    <input class="weui-input" id="pay-num" type="number" name="number" value="" placeholder="请输入激活{$webAliasAsset}">
                 </div>
             </div>
 
             <div class="weui-cell">
                 <div class="weui-cell__hd"><label class="weui-label">支付密码</label></div>
                 <div class="weui-cell__bd">
-                    <input class="weui-input" type="password" name="pay_pass" value="" placeholder="请输入激活密码">
+                    <input class="weui-input" type="password" name="pay_pass" value="" placeholder="请输入激活{$webAliasAsset}">
                 </div>
             </div>
         </div>
@@ -70,7 +70,12 @@
         var str = '';
         if( $('#pay-num').val() == '' ) str += '请输入激活{$webAliasAsset}数量 ';
         if( str == '' ){
-            Ajax($(this), deal);
+            $.confirm("确定要执行此操作吗？", function() {
+                //点击确认后的回调函数
+                Ajax($(this), deal);
+            }, function() {
+                //点击取消后的回调函数
+            });
         }else{
             $.alert(str);
         }
@@ -126,6 +131,7 @@
             if (res.err_msg == "get_brand_wcpay_request:ok") {
                 //window.location.replace("user_index.html");
                 getStatus = setInterval(() => {
+                    $.showLoading('');
                     $.ajax({
                         type: 'get',
                         url: '/index-act-info/' + order_id,
@@ -134,7 +140,10 @@
                             console.log('data', resp);
                             if( resp && resp.data.status == 'success' ){
                                 clearInterval(getStatus);
-                                $.alert('操作成功！');
+                                $.hideLoading();
+                                $.alert('支付成功！', function(){
+                                    location.href = '/';
+                                });
                             }
                         },
                         error: function (data) {

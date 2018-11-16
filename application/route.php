@@ -112,9 +112,12 @@ Route::post('index-login', 'member/Login/login');
 Route::get('index-logout', 'member/Login/logout');
 Route::get('index-reg', 'member/Login/reg');
 Route::post('index-reg', 'member/Login/register');
+Route::get('index-reset', 'member/Login/res');
+Route::post('index-reset', 'member/Login/reset');
 Route::post('wechat-notify-recharge', 'member/Login/notify_recharge');//微信众筹回调
 Route::post('wechat-notify-active', 'member/Login/notify_active');//激活资产回调
-Route::get('index-reg-sms/:phone','member/Login/sms_reg');//注册短信发送
+Route::get('index-reg-sms/:phone', 'member/Login/sms_reg');//注册短信发送
+Route::get('index-reset-sms/:phone', 'member/Login/sms_reset');//注册短信发送
 
 //首页
 Route::get('/index', 'member/Login/exchange_code');//微信进入
@@ -130,6 +133,7 @@ Route::get('index-information-info/:id', 'index/Index/information_info');//文�
 Route::get('index-crowd', 'index/Index/crowd');//众筹
 Route::post('index-crowd', 'index/Recharge/save');//众筹-统一下单
 Route::get('index-crowd-info/:id', 'index/Recharge/info');//支付轮询
+Route::get('index-crowd-out/:id', 'index/Recharge/out');//支付轮询
 Route::get('index-financial', 'index/Index/financial');//财务
 Route::get('index-financial-table', 'index/Index/financial_table');//财务-翻页
 Route::get('index-shift-to-qr', 'index/Index/shift_to_qr');//转入二维码
@@ -150,3 +154,4 @@ Route::get('index-share', 'index/Personal/share');
 Route::get('index-act', 'index/Personal/act');
 Route::post('index-act', 'index/Personal/acted');
 Route::get('index-act-info/:id', 'index/Personal/info');
+Route::get('index-act-out/:id', 'index/Personal/act_out');
