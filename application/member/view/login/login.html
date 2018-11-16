@@ -34,7 +34,7 @@
     <div class="login-out"></div>
 </div>
 
-<input type="hidden" id="hint" value="{if !is_null($errors)}{$errors}{/if}"/>
+<input type="hidden" id="hint" value="{if !empty($errors)}{$errors}{/if}"/>
 </body>
 
 <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>

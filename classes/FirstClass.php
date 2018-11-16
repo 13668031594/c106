@@ -94,7 +94,7 @@ class FirstClass
         $member = session('member');
 
         //验证session中的信息格式与过期时间
-        if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['time']) || ($member['time'] < time())) self::redirect_exception('/index-logout', '请重新登录');
+        if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['time']) || ($member['time'] < time())) self::redirect_exception('/index-logout');
 
         //赋值会员id
         $member_id = $member['id'];
@@ -106,7 +106,7 @@ class FirstClass
         $member = $member->where('id', '=', $member_id)->find();
 
         //没有获取到会员资料，跳转至登录页面
-        if (is_null($member)) self::redirect_exception('/index-logout', '请重新登录');
+        if (is_null($member)) self::redirect_exception('/index-logout');
 
         //获取资料数组，去其他数据
         $member = $member->getData();
@@ -118,7 +118,7 @@ class FirstClass
         $login_ip = $_SERVER["REMOTE_ADDR"];
 
         //登录ip不同，证明在其他地方登录，跳转至登录页面
-        if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout', '已在其他地方登录');
+        if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
 
         //更新操作时间
         self::refresh_login_member($member_id);

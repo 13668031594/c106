@@ -48,17 +48,17 @@
                     <tr>
                         <td>状态/身份</td>
                         <td>
-                            {if $member['status'] == '0'}
+                            {if $member['identify'] == '0'}
                             <span class="layui-badge layui-badge-rim">非会员</span>
                             {else /}
-                            <span class="layui-badge layui-bg-cyan">非会员</span>
+                            <span class="layui-badge layui-bg-cyan">会员</span>
                             {/if}
-                            {if $member['identify'] == '0'}
+                            {if $member['status'] == '0'}
                             <span class="layui-badge layui-bg-green">正常</span>
-                            {elseif $member['identify'] == '1'}
+                            {elseif $member['status'] == '1'}
                             <span class="layui-badge layui-bg-green">冻结</span>
                             {else /}
-                            <span class="layui-badge layui-bg-green">停用</span>
+                            <span class="layui-badge layui-bg-green">禁用</span>
                             {/if}
                         </td>
                     </tr>
