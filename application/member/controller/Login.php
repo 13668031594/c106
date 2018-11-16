@@ -124,6 +124,6 @@ class Login extends Controller
         session('openid', $openid);
 
         //跳转到首页
-        redirect('/');
+        return redirect('/');
     }
 }
