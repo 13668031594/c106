@@ -350,7 +350,7 @@ class Login extends FirstClass
     }
 
     //直充付款成功
-    public function change($order_number)
+    public function change_recharge($order_number)
     {
         //寻找订单
         $recharge = new \app\recharge\model\Recharge();
