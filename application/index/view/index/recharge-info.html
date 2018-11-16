@@ -74,11 +74,12 @@
     });
 
     $('.pay-sure').on('click', function () {
-        wechat_data.timeStamp.toString();
         moneyPay();
     });
+
     var wechat_test = '{$wechat}';
     var wechat_data = JSON.parse(wechat_test);
+    wechat_data.timeStamp.toString();
     var order_id = '{$order["id"]}';
     var getStatus = null;
 
