@@ -25,7 +25,7 @@ class Adv extends FirstClass implements ListInterface
 
     public function index()
     {
-        $result = parent::page($this->model, null, 'asc');
+        $result = parent::page($this->model, 'sort', 'asc');
 
         foreach ($result['message'] as &$v) {
 

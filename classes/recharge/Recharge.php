@@ -42,7 +42,7 @@ class Recharge extends FirstClass
         }
 
 
-        return parent::page($this->model, null, null, $where);
+        return parent::page($this->model, 'created_at', 'desc', $where);
     }
 
     public function edit($id)

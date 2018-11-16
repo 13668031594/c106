@@ -38,7 +38,7 @@ class Member extends FirstClass implements ListInterface
         if (!empty($account)) $where['account'] = ['like', '%' . $account . '%'];
         if (!empty($identify)) $where['identify'] = ['=', $identify];
 
-        return parent::page($this->member, null, null, $where);
+        return parent::page($this->member, 'id', 'desc', $where);
     }
 
     public function create()
