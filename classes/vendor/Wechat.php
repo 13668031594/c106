@@ -208,7 +208,7 @@ class Wechat
     {
         $array = [
             'appId' => $result['appid'],
-            'timeStamp' => $this->time,
+            'timeStamp' => (string)$this->time,
             'nonceStr' => $result['nonce_str'],
             'package' => 'prepay_id=' . $result['prepay_id'],
             'signType' => 'MD5',
