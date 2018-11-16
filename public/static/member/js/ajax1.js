@@ -9,6 +9,7 @@ function Ajax( form, fct, text, dataType, type ){
     var type_ = type || $(form).prop('method');
     var dataType_ = dataType || 'json';
     var fct_ = fct || callback;
+
     if( $(form).find('input:file').length <= 0 ){
         //console.log('序列化');
         var datas = $(form).serialize();
@@ -68,11 +69,10 @@ function after(){
 //成功请求后回调函数
 function callback(resp){
     if( resp && resp.status == 'success' ){
-        $.alert(resp.message, function(){
-            if( resp.url && resp.url != '' ){
-                window.location.href = resp.url;
-            }
-        });
+        $.alert(resp.message);
+        if( resp.url && resp.url != '' ){
+            window.location.href = resp.url;
+        }
     }else{
         if( resp.code == '999' ){
             $.alert('登录失效');
