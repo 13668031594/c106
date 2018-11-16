@@ -327,7 +327,7 @@ class Login extends FirstClass
     {
         //获取openid
         $openid = session('openid');
-exit($openid);
+
         //没有
         if (is_null($openid)) return;
 
@@ -336,7 +336,8 @@ exit($openid);
 
         //获取符合条件的会员
         $member = $member->where('id', '=', $id)->where('wechat_id', '=', null)->find();
-
+        dump($member);
+        exit();
         //没有符合条件的会员
         if (is_null($member)) return;
 
