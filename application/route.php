@@ -126,6 +126,7 @@ Route::get('index-information-hy-table', 'index/Index/information_hy_table');//�
 Route::get('index-information-info/:id', 'index/Index/information_info');//文章详情
 Route::get('index-crowd', 'index/Index/crowd');//众筹
 Route::post('index-crowd', 'index/Recharge/save');//众筹-统一下单
+Route::post('wechat-notify-recharge', 'index/Recharge/notify');//微信众筹回调
 Route::get('index-financial', 'index/Index/financial');//财务
 Route::get('index-financial-table', 'index/Index/financial_table');//财务-翻页
 Route::get('index-shift-to-qr', 'index/Index/shift_to_qr');//转入二维码
@@ -135,13 +136,13 @@ Route::get('index-exchange', 'index/Index/exchange');//转换
 Route::post('index-exchange', 'index/Assetchange/exchange');//转换
 
 //个人中心
-Route::get('index-personal','index/Personal/personal');
-Route::get('index-self','index/Personal/self');
-Route::post('index-self','index/Personal/nickname');
-Route::get('index-password','index/Personal/pass');
-Route::post('index-password','index/Personal/password');
-Route::get('index-pay-pass','index/Personal/pay_pass');
-Route::post('index-pay-pass','index/Personal/pay_password');
-Route::get('index-share','index/Personal/share');
-Route::get('index-act','index/Personal/act');
-Route::post('index-act','index/Personal/acted');
+Route::get('index-personal', 'index/Personal/personal');
+Route::get('index-self', 'index/Personal/self');
+Route::post('index-self', 'index/Personal/nickname');
+Route::get('index-password', 'index/Personal/pass');
+Route::post('index-password', 'index/Personal/password');
+Route::get('index-pay-pass', 'index/Personal/pay_pass');
+Route::post('index-pay-pass', 'index/Personal/pay_password');
+Route::get('index-share', 'index/Personal/share');
+Route::get('index-act', 'index/Personal/act');
+Route::post('index-act', 'index/Personal/acted');

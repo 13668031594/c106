@@ -9,6 +9,9 @@
 namespace classes\index;
 
 
+use app\member\model\Member;
+use app\member\model\MemberRecord;
+use app\recharge\model\RechargePay;
 use classes\FirstClass;
 use classes\setting\Setting;
 use classes\vendor\Wechat;
@@ -124,5 +127,56 @@ class Recharge extends FirstClass
         $sign = $class->jsapi_sign($result);
 
         return $sign;
+    }
+
+    //付款成功
+    public function info($order_number)
+    {
+        //寻找订单
+        $recharge = new \app\recharge\model\Recharge();
+        $recharge = $recharge->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
+        if (is_null($recharge)) return;
+
+        //修改会员状态
+        $member = new Member();
+        $member = $member->where('id', '=', $recharge->member_id)->find();
+        if (is_null($member)) return;
+        $member->jpj += $recharge->jpj;
+        $member->jpj_all += $recharge->jpj_all;
+        $member->total += $recharge->total;
+        $member->save();
+
+        //时间
+        $date = date('Y-m-d H:i:s');
+        $setting = new Setting();
+        $set = $setting->index();
+
+        //修改订单状态
+        $recharge->pay_status = 1;
+        $recharge->pay_type = 1;
+        $recharge->pay_date = $date;
+        $recharge->order_status = 20;
+        $recharge->change_id = $recharge->member_id;
+        $recharge->change_nickname = $recharge->member_nickname;
+        $recharge->change_date = $date;
+        $recharge->save();
+
+        //添加会员记录
+        $record = new MemberRecord();
+        $record->member_id = $member->id;
+        $record->account = $member->account;
+        $record->nickname = $member->nickname;
+        $record->type = 21;
+        $record->content = '直充订单成功付款，获得『' . $set['webAliasJpj'] . '』' . $recharge->jpj;
+        $record->created_at = $date;
+        $record->integral_now = $member->integral;
+        $record->integral_all = $member->integral_all;
+        $record->asset_now = $member->asset;
+        $record->asset_act_now = $member->asset_act;
+        $record->asset_all = $member->asset_all;
+        $record->jpj = $recharge->jpj;
+        $record->jpj_now = $member->jpj;
+        $record->jpj_all = $member->jpj_all;
+        $record->save();
     }
 }

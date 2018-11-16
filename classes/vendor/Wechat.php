@@ -8,28 +8,32 @@
 
 namespace classes\vendor;
 
+use app\recharge\model\RechargePay;
+use classes\set\ContrastArrays;
+use classes\set\LoginSet;
+
 class Wechat
 {
     //微信接口地址
-    protected $wechat_url = 'https://api.weixin.qq.com';
+    public $wechat_url = 'https://api.weixin.qq.com';
 
     //通行证缓存名称
-    protected $cache_name = 'item\Wechat\token';
+    public $cache_name = 'item\Wechat\token';
 
     //公众号id
-    protected $appid = 'wxf5dce90eea5f9fef';
+    public $appid = 'wxf5dce90eea5f9fef';
 
     //公众号密码
-    protected $secret = 'f8c075ccf1457a63b30f2f2a74dd8c44';
+    public $secret = 'f8c075ccf1457a63b30f2f2a74dd8c44';
 
     //加密密匙，随机生成
-    protected $EncodingAESKey = 'M6T1OclkiLeUWXZMIj7rkG1YxisUKXnZ';
+    public $EncodingAESKey = 'M6T1OclkiLeUWXZMIj7rkG1YxisUKXnZ';
 
     //商户号
-    protected $wechat_id = '1508961381';
+    public $wechat_id = '1508961381';
 
     //票据
-    protected $access_token;
+    public $access_token;
 
     private $url = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
@@ -80,6 +84,8 @@ class Wechat
         if (!isset($order['total_fee']) || is_null($order['total_fee'])) exit('请传入订单金额');
         if (!isset($order['order_type']) || is_null($order['order_type'])) exit('请传入订单类型');
 
+        $login_set = new LoginSet();
+
         $this->time = time();
 
         $set = [
@@ -90,7 +96,7 @@ class Wechat
             'out_trade_no' => $order['out_trade_no'],
             'total_fee' => $order['total_fee'],
             'spbill_create_ip' => '14.111.54.177',
-            'notify_url' => 'http://c106.tp/wechat-notify-' . $order['order_type'],
+            'notify_url' => $login_set->url . '/wechat-notify-' . $order['order_type'],
             'trade_type' => $trade_type,
         ];
 
@@ -163,7 +169,7 @@ class Wechat
      * @param $array
      * @return string
      */
-    protected function array_to_xml($array)
+    public function array_to_xml($array)
     {
         $xml = "<xml>\n";
 
@@ -184,14 +190,13 @@ class Wechat
     }
 
 
-
     /**
      * 格式转换，xml转array
      *
      * @param $xml
      * @return mixed
      */
-    protected function xml_to_array($xml)
+    public function xml_to_array($xml)
     {
         //禁止引用外部xml实体
         libxml_disable_entity_loader(true);
@@ -236,7 +241,7 @@ class Wechat
      * @param $url
      * @return mixed
      */
-    protected function get_wechat_json($url)
+    public function get_wechat_json($url)
     {
         $result = self::url_get($url);
 
@@ -249,7 +254,7 @@ class Wechat
      * @param string $url
      * @return mixed|string
      */
-    protected function url_get($url)
+    public function url_get($url)
     {
         //初始化一个curl会话
         $ch = curl_init();
@@ -278,7 +283,7 @@ class Wechat
      * @param int $timeout
      * @return mixed
      */
-    protected function url_post($url, $post_data, $timeout = 5)
+    public function url_post($url, $post_data, $timeout = 5)
     {
         /*$ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -310,5 +315,37 @@ class Wechat
         $output = curl_exec($ch);
         curl_close($ch);
         return $output;
+    }
+
+    /**
+     * 添加支付记录
+     *
+     * @param $array
+     * @param $xml
+     * @return RechargePay|bool
+     */
+    public function is_pay($array, $xml)
+    {
+        $out_trade_no = $array['out_trade_no'];
+        list($order, $time) = explode('_', $out_trade_no);
+
+        $date = date('Y-m-d H:i:s', $time);
+
+        $test = new RechargePay();
+        $test = $test->where('order_number', '=', $order)->where('make_time', '=', $date)->find();
+
+        if (!is_null($test)) return false;
+
+        $model = new RechargePay();
+        $model->xml = $xml;
+        $model->order_number = $order;
+        $model->total = ($array['total_fee'] / 100);
+        $model->trade_type = $array['trade_type'];
+        $model->make_time = $date;
+        $model->return_code = $array['return_code'];
+        $model->result_code = $array['result_code'];
+        $model->save();
+
+        return $model;
     }
 }
