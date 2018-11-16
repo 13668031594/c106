@@ -144,12 +144,12 @@ class Login extends Controller
 
             //转为array
             $array = $class->xml_to_array($xml);
-            $class = new StorageClass('wechat');
-            $class->save(json_encode($array));
-            exit;
+
             //添加支付记录
             $model = $class->is_pay($array, $xml);
-
+            $class = new StorageClass('wechat');
+            $class->save('333');
+            exit;
             //判断,已经添加过了
             if ($model === false) return 'success';
 
