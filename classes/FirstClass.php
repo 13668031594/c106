@@ -218,7 +218,7 @@ class FirstClass
      * @param $error
      * @throws AjaxException
      */
-    protected function ajax_exception($code, $error)
+    public function ajax_exception($code, $error)
     {
         Db::rollback();
 

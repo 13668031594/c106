@@ -155,10 +155,8 @@ class Login extends Controller
             //判断
             if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
-                $class = new Recharge();
-
                 //付款成功
-                $class->change($model->order_number);
+                $this->class->change_recharge($model->order_number);
             }
 
             Db::commit();
