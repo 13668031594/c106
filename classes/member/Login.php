@@ -12,6 +12,7 @@ use app\attendance\model\Attendance;
 use app\member\model\MemberRecord;
 use classes\FirstClass;
 use classes\setting\Setting;
+use classes\vendor\StorageClass;
 
 class Login extends FirstClass
 {
@@ -352,10 +353,15 @@ class Login extends FirstClass
     //直充付款成功
     public function change_recharge($order_number)
     {
+        $class = new StorageClass('wechat');
+        $class->save('0');
+
         //寻找订单
         $recharge = new \app\recharge\model\Recharge();
         $recharge = $recharge->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
         if (is_null($recharge)) return;
+
+        $class->save('1');
 
         //修改会员状态
         $member = new Member();
@@ -366,10 +372,15 @@ class Login extends FirstClass
         $member->total += $recharge->total;
         $member->save();
 
+        $class->save('2');
+
+
         //时间
         $date = date('Y-m-d H:i:s');
         $setting = new Setting();
         $set = $setting->index();
+
+        $class->save('3');
 
         //修改订单状态
         $recharge->pay_status = 1;
@@ -380,6 +391,8 @@ class Login extends FirstClass
         $recharge->change_nickname = $recharge->member_nickname;
         $recharge->change_date = $date;
         $recharge->save();
+
+        $class->save('4');
 
         //添加会员记录
         $record = new MemberRecord();
@@ -398,5 +411,8 @@ class Login extends FirstClass
         $record->jpj_now = $member->jpj;
         $record->jpj_all = $member->jpj_all;
         $record->save();
+
+        $class->save('5');
+
     }
 }
