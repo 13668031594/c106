@@ -117,13 +117,17 @@
         {
             //window.location.replace("user_index.html");
             getStatus = setInterval(function (){
-                $.ajax({
+
+                    $.showLoading('');
+                    $.ajax({
                 type: 'get',
                 url: '/index-crowd-info/' + order_id,//轮询路由
                 dataType: 'json',
                 success: function (resp) {
                     //console.log('data', resp);
                     if (resp && resp.status == 'success') {
+                        $.hideLoading();
+
                         clearInterval(getStatus);
                         $.alert('支付成功！');
                     }

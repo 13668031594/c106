@@ -133,6 +133,8 @@
                 {
                     //window.location.replace("user_index.html");
                     getStatus = setInterval(function (){
+                            $.showLoading('');
+
                             $.ajax({
                                 type: 'get',
                                 url: '/index-act-info/' + order_id,//轮询路由
@@ -140,6 +142,8 @@
                                 success: function (resp) {
                                     //console.log('data', resp);
                                     if (resp && resp.status == 'success') {
+                                        $.hideLoading();
+
                                         clearInterval(getStatus);
                                         $.alert('支付成功！');
                                     }
