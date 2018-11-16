@@ -147,12 +147,12 @@ class Login extends Controller
 
             //添加支付记录
             $model = $class->is_pay($array, $xml);
-            $class = new StorageClass('wechat');
-            $class->save('333');
-            exit;
+
             //判断,已经添加过了
             if ($model === false) return 'success';
-
+            $class = new StorageClass('wechat');
+            $class->save('3334');
+            exit;
             //判断
             if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
