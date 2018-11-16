@@ -11,7 +11,11 @@ namespace classes\member;
 use app\attendance\model\Attendance;
 use app\member\model\MemberRecord;
 use classes\FirstClass;
+use classes\index\Recharge;
 use classes\setting\Setting;
+use classes\vendor\Wechat;
+use think\Db;
+use think\Request;
 
 class Login extends FirstClass
 {
@@ -348,4 +352,39 @@ class Login extends FirstClass
         //保存
         $member->save();
     }
+
+    public function notify(Request $request)
+    {
+        Db::startTrans();
+
+        //初始化操作类
+        $class = new Wechat();
+
+        //获取微信回调信息，xml格式
+        $xml = $request->getContent();
+
+        //转为array
+        $array = $class->xml_to_array($xml);
+
+        //添加支付记录
+        $model = $class->is_pay($array, $xml);
+
+        //判断,已经添加过了
+        if ($model === false) return 'success';
+
+        //判断
+        if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
+
+            $class = new Recharge();
+
+            //付款成功
+            $class->change($model->order_number);
+        }
+
+        Db::commit();
+
+        //返回微信回调成功
+        return 'success';
+    }
+
 }
