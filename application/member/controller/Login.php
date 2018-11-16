@@ -89,7 +89,7 @@ class Login extends Controller
         $member = $this->class->reg();
 
         //注册奖励
-        $this->class->reg_reward($member);
+        $member = $this->class->reg_reward($member);
 
         //绑定微信
         $this->class->wechat_banding($member->id);
