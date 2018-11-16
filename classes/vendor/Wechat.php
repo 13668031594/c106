@@ -8,7 +8,6 @@
 
 namespace classes\vendor;
 
-
 class Wechat
 {
     //微信接口地址
@@ -18,7 +17,7 @@ class Wechat
     protected $cache_name = 'item\Wechat\token';
 
     //公众号id
-    protected $appid  = 'wxf5dce90eea5f9fef';
+    protected $appid = 'wxf5dce90eea5f9fef';
 
     //公众号密码
     protected $secret = 'f8c075ccf1457a63b30f2f2a74dd8c44';
@@ -184,6 +183,93 @@ class Wechat
         return $xml;
     }
 
+
+
+    /**
+     * 格式转换，xml转array
+     *
+     * @param $xml
+     * @return mixed
+     */
+    protected function xml_to_array($xml)
+    {
+        //禁止引用外部xml实体
+        libxml_disable_entity_loader(true);
+        $values = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        return $values;
+    }
+
+    public function jsapi_sign($result)
+    {
+        $array = [
+            'appId' => $result['appid'],
+            'timeStamp' => $this->time,
+            'nonceStr' => $result['nonce_str'],
+            'package' => 'prepay_id=' . $result['prepay_id'],
+            'signType' => 'MD5',
+        ];
+
+        $array['paySign'] = self::sign($array);
+
+        return $array;
+    }
+
+    /**
+     * 静默获取openid
+     *
+     * @return mixed
+     */
+    public function openid()
+    {
+        $code = $_GET['code'];
+
+        $url = $this->wechat_url . '/sns/oauth2/access_token?appid=' . $this->appid . '&secret=' . $this->secret . '&code=' . $code . '&grant_type=authorization_code';
+
+        $result = self::get_wechat_json($url);
+
+        return $result;
+    }
+
+    /**
+     * 访问微信，并然会结果数组,返回json
+     *
+     * @param $url
+     * @return mixed
+     */
+    protected function get_wechat_json($url)
+    {
+        $result = self::url_get($url);
+
+        return json_decode($result, true);
+    }
+
+    /**
+     * 访问url，get
+     *
+     * @param string $url
+     * @return mixed|string
+     */
+    protected function url_get($url)
+    {
+        //初始化一个curl会话
+        $ch = curl_init();
+        //初始化CURL回话链接地址，设置要抓取的url
+        curl_setopt($ch, CURLOPT_URL, $url);
+        //对认证证书来源的检查，FALSE表示阻止对证书的合法性检查
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        //从证书中检查SSL加密算法是否存在
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        //设置将获得的结果是否保存在字符串中还是输出到屏幕上，0输出，非0不输出
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        //执行请求，获取结果
+        $result = curl_exec($ch);
+        //关闭会话
+        curl_close($ch);
+
+        //反馈结果
+        return $result;
+    }
+
     /**
      * 访问url，post
      *
@@ -224,34 +310,5 @@ class Wechat
         $output = curl_exec($ch);
         curl_close($ch);
         return $output;
-    }
-
-    /**
-     * 格式转换，xml转array
-     *
-     * @param $xml
-     * @return mixed
-     */
-    protected function xml_to_array($xml)
-    {
-        //禁止引用外部xml实体
-        libxml_disable_entity_loader(true);
-        $values = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
-        return $values;
-    }
-
-    public function jsapi_sign($result)
-    {
-        $array = [
-            'appId' => $result['appid'],
-            'timeStamp' => $this->time,
-            'nonceStr' => $result['nonce_str'],
-            'package' => 'prepay_id=' . $result['prepay_id'],
-            'signType' => 'MD5',
-        ];
-
-        $array['paySign'] = self::sign($array);
-
-        return $array;
     }
 }

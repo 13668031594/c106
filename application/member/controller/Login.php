@@ -2,6 +2,7 @@
 
 namespace app\member\controller;
 
+use classes\vendor\Wechat;
 use think\Controller;
 use think\Db;
 use think\Request;
@@ -85,5 +86,25 @@ class Login extends Controller
         session('errors', ['注册成功']);
 
         return $this->class->success();
+    }
+
+    //静默授权，获取openid
+    public function exchange_code()
+    {
+//        exit('123');
+//        return redirect('http://zc.ythx123.com/#/transition/123');
+
+        $url = 'http://zc.ythx123.com/#/transition';
+
+        //初始化class
+        $class = new Wechat();
+
+        //找微信要数据
+        $result = $class->openid();
+
+        //赋值openid
+        $openid = isset($result['openid']) ? $result['openid'] : null;
+
+        exit($openid);
     }
 }

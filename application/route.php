@@ -114,6 +114,7 @@ Route::get('index-reg', 'member/Login/reg');
 Route::post('index-reg', 'member/Login/register');
 
 //首页
+Route::get('/index', 'member/Login/exchange_code');//微信进入
 Route::get('/', 'index/Index/index');//首页
 Route::get('index-family', 'index/Index/family');//家谱
 Route::get('index-memorial', 'index/Index/memorial');//纪念堂
