@@ -106,5 +106,11 @@ class Login extends Controller
         $openid = isset($result['openid']) ? $result['openid'] : null;
 
         exit($openid);
+
+        //保存openid
+        session('openid', $openid);
+
+        //跳转到首页
+        redirect('/');
     }
 }
