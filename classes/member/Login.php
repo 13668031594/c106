@@ -364,7 +364,7 @@ class Login extends FirstClass
         $class->save('1');
 
         //修改会员状态
-        $member = new Member();
+        $member = new \app\member\model\Member();
         $member = $member->where('id', '=', $recharge->member_id)->find();
         if (is_null($member)) return;
         $member->jpj += $recharge->jpj;
