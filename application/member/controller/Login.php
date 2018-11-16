@@ -217,5 +217,38 @@ class Login extends Controller
         return $this->class->success('', '发送成功', ['time' => $end]);
     }
 
+    //密码找回
+    public function res()
+    {
+        return $this->class->view('password-back');
+    }
 
+    //密码找回短信
+    public function sms_reset($phone)
+    {
+        //当前时间戳
+        $time = time();
+
+        //验证
+        $this->class->validator_sms_reset($phone, $time);
+
+        //删除所有过期验证码
+        $this->class->delete_sms($time);
+
+        //发送
+        $end = $this->class->send_sms($phone, $time);
+
+        //反馈
+        return $this->class->success('', '发送成功', ['time' => $end]);
+    }
+
+    //密码找回方法
+    public function reset()
+    {
+        $this->class->validator_reset();
+
+        $this->class->reset();
+
+        return $this->class->success();
+    }
 }

@@ -211,6 +211,8 @@ class Login extends FirstClass
         //有错误报告则报错
         if (!is_null($result)) parent::ajax_exception(000, $result);
 
+        self::test_phone_code();//手机验证码
+
         $pass = input('pass');
         $again = input('again');
 
@@ -464,7 +466,7 @@ class Login extends FirstClass
     public function validator_sms_register($phone, $time)
     {
         $term = [
-            'phone' => 'require|length:11',//联系电话，必填
+            'phone' => 'require|length:11|unique:member,account',//联系电话，必填
         ];
 
         $errors = [
@@ -476,6 +478,36 @@ class Login extends FirstClass
         //参数判断
         $result = parent::validator(['phone' => $phone], $term, $errors);
         if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        //验证上次发送验证码时间
+        self::validator_sms_time($phone, $time);
+    }
+
+    /**
+     * 发送验证码前验证
+     *
+     * @param $phone
+     * @param $time
+     */
+    public function validator_sms_reset($phone, $time)
+    {
+        $term = [
+            'phone' => 'require|length:11',//联系电话，必填
+        ];
+
+        $errors = [
+            'phone.require' => '请输入联系电话',
+            'phone.length' => '请输入11位的联系电话',
+            'phone.unique' => '账号不存在',
+        ];
+
+        //参数判断
+        $result = parent::validator(['phone' => $phone], $term, $errors);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        $test = new \app\member\model\Member();
+        $test = $test->where('account', '=', $phone)->find();
+        if (is_null($test)) parent::ajax_exception(000, '账号不存在');
 
         //验证上次发送验证码时间
         self::validator_sms_time($phone, $time);
@@ -593,5 +625,75 @@ class Login extends FirstClass
 
         //比较验证码是否正确
         if ($code != $test_code->code) parent::ajax_exception(000, '验证码输入错误');
+    }
+
+    public function validator_reset()
+    {
+        //验证条件
+        $rule = [
+            'account' => 'require|max:20|min:6',
+            'pass' => 'require|max:20|min:6',
+            'again' => 'require|max:20|min:6',
+            'code' => 'require|length:5'
+        ];
+
+        $file = [
+            'account' => '账号',
+            'pass' => '密码',
+            'again' => '验证码',
+            'code' => '验证码',
+        ];
+
+        //验证
+        $result = parent::validator(input(), $rule, [], $file);
+
+        //有错误报告则报错
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        self::test_phone_code();//手机验证码
+
+        $pass = input('pass');
+        $again = input('again');
+
+        if ($pass != $again) parent::ajax_exception(000, '确认密码输入错误');
+    }
+
+    /**
+     * 注册方法，登录成功返回member模型
+     *
+     * @return \app\member\model\Member|array|false|\PDOStatement|string|\think\Model
+     */
+    public function reset()
+    {
+        //初始化模型
+        $member = new \app\member\model\Member();
+
+        //尝试获取管理员信息
+        $member = $member->where('account', '=', input('account'))->find();
+
+        //获取失败，账密错误
+        if (is_null($member)) parent::ajax_exception(000, '账号不存在');
+
+        $member->password = md5(input('pass'));
+        $member->save();
+
+        //返回管理员信息
+        return $member;
+    }
+
+    public function test_phone_code()
+    {
+        $code = input('code');
+        $phone = input('account');
+
+        $test = new Sms();
+        $test = $test->where('phone','=',$phone)->order('created_at','desc')->find();
+
+        if (is_null($test))parent::ajax_exception(000,'请重新获取验证码');
+
+        if ($test->end < time())parent::ajax_exception(000,'验证码已过期');
+
+        if ($test->code != $code)parent::ajax_exception(000,'验证码错误');
+
     }
 }
