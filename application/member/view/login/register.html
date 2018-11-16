@@ -22,10 +22,10 @@
             <input type="password" class="form-input password" name="pass" value="" placeholder="请输入密码"/>
             <input type="password" class="form-input password-sure" name="again" value="" placeholder="请确认密码"/>
             <input type="text" class="form-input" name="referee_account" value="{if !is_null($referee_account)}{$referee_account}{/if}" placeholder="请输入推广账号"/>
-            <!--<div class="form-cell">
-                <input type="number" maxlength="5" class="form-input phone-code" name="" value="" placeholder="手机验证码"/>
+            <div class="form-cell">
+                <input type="number" maxlength="5" class="form-input phone-code" name="code" value="" placeholder="手机验证码"/>
                 <span class="code-btn">获取验证码</span>
-            </div>-->
+            </div>
             <button class="form-btn" type="submit">注册</button>
         </form>
 
@@ -70,8 +70,8 @@
             if( can_get_code ){
                 can_get_code = false;
                 $.ajax({
-                    type: 'post',
-                    url: '',
+                    type: 'get',
+                    url: '/index-sms-reg/',
                     dataType: 'json',
                     data: { phone: $('.username').val() },
                     success: function(resp){

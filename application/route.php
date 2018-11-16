@@ -114,6 +114,7 @@ Route::get('index-reg', 'member/Login/reg');
 Route::post('index-reg', 'member/Login/register');
 Route::post('wechat-notify-recharge', 'member/Login/notify_recharge');//微信众筹回调
 Route::post('wechat-notify-active', 'member/Login/notify_active');//激活资产回调
+Route::get('index-reg-sms/:phone','member/Login/sms_reg');//注册短信发送
 
 //首页
 Route::get('/index', 'member/Login/exchange_code');//微信进入

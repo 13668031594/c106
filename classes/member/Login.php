@@ -11,6 +11,7 @@ namespace classes\member;
 use app\active\model\Active;
 use app\attendance\model\Attendance;
 use app\member\model\MemberRecord;
+use app\member\model\Sms;
 use classes\FirstClass;
 use classes\setting\Setting;
 use classes\vendor\StorageClass;
@@ -192,14 +193,16 @@ class Login extends FirstClass
             'account' => 'require|max:20|min:6',
             'pass' => 'require|max:20|min:6',
             'again' => 'require|max:20|min:6',
-            'referee_account' => 'min:6|max:20'
+            'referee_account' => 'min:6|max:20',
+            'code' => 'require|length:5'
         ];
 
         $file = [
             'account' => '账号',
             'pass' => '密码',
             'again' => '验证码',
-            'referee_account' => '推广账号'
+            'referee_account' => '推广账号',
+            'code' => '验证码',
         ];
 
         //验证
@@ -450,5 +453,145 @@ class Login extends FirstClass
         $record->jpj_now = $member->jpj;
         $record->jpj_all = $member->jpj_all;
         $record->save();
+    }
+
+    /**
+     * 发送验证码前验证
+     *
+     * @param $phone
+     * @param $time
+     */
+    public function validator_sms_register($phone, $time)
+    {
+        $term = [
+            'phone' => 'require|length:11|unique:member,account',//联系电话，必填
+        ];
+
+        $errors = [
+            'phone.require' => '请输入联系电话',
+            'phone.length' => '请输入11位的联系电话',
+            'phone.unique' => '该电话号码已经注册过账号，请更换联系电话或填写账号信息',
+        ];
+
+        //参数判断
+        $result = parent::validator(['phone' => $phone], $term, $errors);
+        if (!is_null($result)) parent::ajax_exception(000, $result);
+
+        //验证上次发送验证码时间
+        self::validator_sms_time($phone, $time);
+    }
+
+    /**
+     * 验证上次发送验证码时间
+     *
+     * @param $phone
+     * @param $time
+     */
+    public function validator_sms_time($phone, $time)
+    {
+        //获取该电话号码最新的验证码
+        $test = new Sms();
+        $test_code = $test->where('phone', '=', $phone)->order('created_at', 'desc')->find();
+
+        //没有找到数据
+        if (!is_null($test_code)) {
+
+            //比较是否超时
+            if ($time < $test_code->end) {
+
+                /*$errors = [
+                    'status' => 'fails',
+                    'test' => '上一个验证码尚未失效，无法再次发送',
+                    'time' => [$test_code->end],
+                ];*/
+
+                $end = $test_code->end - $time;
+
+                parent::ajax_exception('001', $end);
+            }
+        }
+    }
+
+    //删除所有超时验证码
+    public function delete_sms($time)
+    {
+        $model = new Sms();
+        $model->where('end', '<', $time)->delete();
+    }
+
+    //发送短信
+    public function send_sms($phone, $time, $templateCode = 'SMS_138077711')
+    {
+        //初始化短信类
+        $class = new \classes\member\Sms();
+
+        //生成验证码
+        $code = rand(10000, 99999);
+
+        //发送短信
+        $result = $class->sendSms($phone, $code, $templateCode);
+
+        //判断回执
+        if (!isset($result->Message)) parent::ajax_exception(000, '请刷新重试(message)');
+
+        //判断是否成功
+        if ($result->Message != 'OK') {
+
+            //根据状态吗报错
+            switch ($result->Code) {
+
+                case 'isv.BUSINESS_LIMIT_CONTROL':
+                    $error = '每小时只能发送5条短信';
+                    break;
+                case 'isv.MOBILE_NUMBER_ILLEGAL':
+                    $error = '非法手机号';
+                    break;
+                case 'isv.MOBILE_COUNT_OVER_LIMIT':
+                    //账户不存在
+                    $error = '手机号码数量超过限制';
+                    break;
+                default:
+                    $error = '请刷新重试（code）';
+                    break;
+            }
+
+            parent::ajax_exception(000, $error);
+        }
+
+        //生成结束时间
+        $end = $time + 120;
+
+        //添加到数据库
+        $model = new Sms();
+        $model->phone = $phone;
+        $model->end = $end;
+        $model->code = $code;
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->save();
+
+        return $end;
+    }
+
+    //验证短信
+    public function validator_phone()
+    {
+        $phone = input('account');
+        $code = input('code');
+
+        //获取该电话号码最新的验证码
+        $test = new Sms();
+        $test_code = $test->where('phone', '=', $phone)->order('created_at', 'desc')->find();
+
+        //没有找到数据
+        if (is_null($test_code)) parent::ajax_exception(000, '验证码输入错误');
+
+        //当前时间戳
+        $now_time = time();
+
+        //比较是否超时
+        if ($now_time > $test_code->end) parent::ajax_exception(000, '验证码已经失效,请重新获取');
+
+        //比较验证码是否正确
+        if ($code != $test_code->code) parent::ajax_exception(000, '验证码输入错误');
     }
 }

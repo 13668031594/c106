@@ -86,6 +86,7 @@ class Login extends Controller
     public function register()
     {
         Db::startTrans();
+
         //注册验证
         $this->class->validator_reg();
 
@@ -100,7 +101,7 @@ class Login extends Controller
 
         Db::commit();
 
-        session('errors', ['注册成功']);
+        session('errors', '注册成功');
 
         return $this->class->success();
     }
@@ -131,6 +132,7 @@ class Login extends Controller
         return redirect('/');
     }
 
+    //直充订单回调
     public function notify_recharge(Request $request)
     {
         Db::startTrans();
@@ -163,6 +165,7 @@ class Login extends Controller
         return 'success';
     }
 
+    //激活订单回调
     public function notify_active(Request $request)
     {
         Db::startTrans();
@@ -194,4 +197,25 @@ class Login extends Controller
         //返回微信回调成功
         return 'success';
     }
+
+    //短信发送
+    public function sms_reg($phone)
+    {
+        //当前时间戳
+        $time = time();
+
+        //验证
+        $this->class->validator_sms_register($phone, $time);
+
+        //删除所有过期验证码
+        $this->class->delete_sms($time);
+
+        //发送
+        $end = $this->class->send_sms($phone, $time);
+
+        //反馈
+        return $this->class->success('', '发送成功', ['time' => $end]);
+    }
+
+
 }
