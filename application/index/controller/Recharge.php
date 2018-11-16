@@ -26,7 +26,7 @@ class Recharge extends Controller
 
         $result = $this->class->pay($order);
 
-        return $this->class->success('', null, ['wechat' => $result]);
+        return $this->class->success('', null, ['wechat' => $result,'order' => $order]);
     }
 
     public function notify(Request $request)
