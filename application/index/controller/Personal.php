@@ -98,4 +98,12 @@ class Personal extends Controller
 
         return $this->class->success('', null, ['wechat' => $result, 'order' => $order]);
     }
+
+    //激活轮询
+    public function info($id)
+    {
+        $this->class->info($id);
+
+        return $this->class->success();
+    }
 }

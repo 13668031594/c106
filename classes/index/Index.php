@@ -255,7 +255,6 @@ class Index extends FirstClass
         $model->saveAll([$member]);
     }
 
-
     //验证下单字段
     public function validator_act()
     {
@@ -280,9 +279,12 @@ class Index extends FirstClass
         //验证支付密码
         if (md5(input('pay_pass')) != $this->member['pay_pass']) parent::ajax_exception(000, '支付密码错误');
 
+
         //验证兑换比例
         $setting = new Setting();
         $set = $setting->index();
+
+        if (input('amount') > $this->member['asset']) parent::ajax_exception(000, $set['webAliasAsset'] . '不足');
 
         if ((input('payActAllot') != $set['payActAllot'])) parent::ajax_exception(000, '请刷新重试001');
     }
@@ -290,6 +292,11 @@ class Index extends FirstClass
     //下单
     public function act()
     {
+        //验证兑换比例
+        $setting = new Setting();
+        $set = $setting->index();
+        $date = date('Y-m-d H:i:s');
+
         //计算获得支付金额
         $amount = input('amount');
         $bili1 = input('payActAllot') <= 0 ? 0 : (input('payActAllot') / 10000);
@@ -309,6 +316,29 @@ class Index extends FirstClass
         $order->member_create = $this->member['created_at'];
         $order->created_at = date('Y-m-d H:i:s');
         $order->save();
+
+        $member = new \app\member\model\Member();
+        $member = $member->where('id', '=', $this->member['id'])->find();
+        $member->asset -= $amount;
+        $member->save();
+
+        //添加会员记录
+        $record = new MemberRecord();
+        $record->member_id = $member->id;
+        $record->account = $member->account;
+        $record->nickname = $member->nickname;
+        $record->type = 30;
+        $record->content = '添加激活订单成功，扣除『' . $set['webAliasAsset'] . '』' . $amount;
+        $record->created_at = $date;
+        $record->integral_now = $member->integral;
+        $record->integral_all = $member->integral_all;
+        $record->asset = 0- $amount;
+        $record->asset_now = $member->asset;
+        $record->asset_act_now = $member->asset_act;
+        $record->asset_all = $member->asset_all;
+        $record->jpj_now = $member->jpj;
+        $record->jpj_all = $member->jpj_all;
+        $record->save();
 
         return $order->getData();
     }
@@ -340,6 +370,7 @@ class Index extends FirstClass
         }
     }
 
+    //激活下单
     public function act_pay($order)
     {
         if (isset($order['order_status']) && $order['order_status'] != '10') parent::ajax_exception(000, '订单已锁定，无法支付');
@@ -362,6 +393,64 @@ class Index extends FirstClass
         $sign = $class->jsapi_sign($result);
 
         return $sign;
+    }
+
+    //付款成功
+    public function change($order_number)
+    {
+        //寻找订单
+        $active = new Active();
+        $active = $active->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
+        if (is_null($active)) return;
+
+        //修改会员状态
+        $member = new Member();
+        $member = $member->where('id', '=', $active->member_id)->find();
+        if (is_null($member)) return;
+        $member->total += $active->total;
+        $member->asset_act += $active->asset;
+        $member->save();
+
+        //时间
+        $date = date('Y-m-d H:i:s');
+        $setting = new Setting();
+        $set = $setting->index();
+
+        //修改订单状态
+        $active->pay_status = 1;
+        $active->pay_type = 1;
+        $active->pay_date = $date;
+        $active->order_status = 20;
+        $active->change_id = $active->member_id;
+        $active->change_nickname = $active->member_nickname;
+        $active->change_date = $date;
+        $active->save();
+
+        //添加会员记录
+        $record = new MemberRecord();
+        $record->member_id = $member->id;
+        $record->account = $member->account;
+        $record->nickname = $member->nickname;
+        $record->type = 31;
+        $record->content = '激活订单成功付款，获得『激活' . $set['webAliasAsset'] . '』' . $active->asset;
+        $record->created_at = $date;
+        $record->integral_now = $member->integral;
+        $record->integral_all = $member->integral_all;
+        $record->asset_now = $member->asset;
+        $record->asset_act= $active->asset;
+        $record->asset_act_now = $member->asset_act;
+        $record->asset_all = $member->asset_all;
+        $record->jpj_now = $member->jpj;
+        $record->jpj_all = $member->jpj_all;
+        $record->save();
+    }
+
+    //轮询
+    public function info($id)
+    {
+        $recharge = new Active();
+        $recharge = $recharge->where('id', '=', $id)->where('order_status', '=', '10')->find();
+        if (!is_null($recharge)) parent::ajax_exception(000, '');
     }
 
 }
