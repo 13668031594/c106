@@ -26,7 +26,7 @@ class Recharge extends Controller
 
         $result = $this->class->pay($order);
 
-        return $this->class->success('', null, ['wechat' => $result,'order' => $order]);
+        return $this->class->success('', null, ['wechat' => $result, 'order' => $order]);
     }
 
     public function notify(Request $request)
@@ -52,12 +52,19 @@ class Recharge extends Controller
         if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
             //付款成功
-            $this->class->info($model->order_number);
+            $this->class->change($model->order_number);
         }
 
         Db::commit();
 
         //返回微信回调成功
         return 'success';
+    }
+
+    public function info($order_id)
+    {
+        $this->class->info($order_id);
+
+        return $this->class->success();
     }
 }

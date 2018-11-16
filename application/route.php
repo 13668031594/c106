@@ -127,6 +127,7 @@ Route::get('index-information-info/:id', 'index/Index/information_info');//文�
 Route::get('index-crowd', 'index/Index/crowd');//众筹
 Route::post('index-crowd', 'index/Recharge/save');//众筹-统一下单
 Route::post('wechat-notify-recharge', 'index/Recharge/notify');//微信众筹回调
+Route::get('index-crowd-info/:id', 'index/Recharge/info');//支付回调
 Route::get('index-financial', 'index/Index/financial');//财务
 Route::get('index-financial-table', 'index/Index/financial_table');//财务-翻页
 Route::get('index-shift-to-qr', 'index/Index/shift_to_qr');//转入二维码

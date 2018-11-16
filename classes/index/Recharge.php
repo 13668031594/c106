@@ -131,7 +131,7 @@ class Recharge extends FirstClass
     }
 
     //付款成功
-    public function info($order_number)
+    public function change($order_number)
     {
         //寻找订单
         $recharge = new \app\recharge\model\Recharge();
@@ -179,5 +179,13 @@ class Recharge extends FirstClass
         $record->jpj_now = $member->jpj;
         $record->jpj_all = $member->jpj_all;
         $record->save();
+    }
+
+    //轮询
+    public function info($id)
+    {
+        $recharge = new \app\recharge\model\Recharge();
+        $recharge = $recharge->where('id', '=', $id)->where('order_status', '==', '10')->find();
+        if (is_null($recharge)) parent::ajax_exception(000, '');
     }
 }
