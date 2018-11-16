@@ -57,10 +57,21 @@
         if( str != '' ){
             $.alert(str, '提示');
         }else{
-            Ajax($('.forms'));
+            Ajax($('.forms'), del);
         }
         return false;
     });
+
+    function del(resp){
+        if( resp && resp.status == 'success' ){
+            $.alert("注册成功", function() {
+                //点击确认后的回调函数
+                window.location.href = '/index-login';
+            });
+        }else{
+            $.alert(resp.message);
+        }
+    }
 
     $('.code-btn').on('touchend', getCode);
 
@@ -71,26 +82,26 @@
                 can_get_code = false;
                 $.ajax({
                     type: 'get',
-                    url: '/index-sms-reg/',
+                    url: '/index-reg-sms/' + $('.username').val(),
                     dataType: 'json',
-                    data: { phone: $('.username').val() },
                     success: function(resp){
-                        console.log('短信验证码', resp);
-                        if( resp && resp.data.status == 'success' ){
-                            window.localStorage.setItem('code_times', JSON.stringify(resp.data.test.time + '000'));
+                        //console.log('短信验证码', resp);
+                        if( resp && resp.status == 'success' ){
+                            window.localStorage.setItem('code_times', JSON.stringify(resp.time + '000'));
                             $('.code-btn').text( '重新获取(' + num + ')' );
                             timer = setInterval(countDown, 1000);
                         }else{
-                            if( resp.data.time ){
-                                window.localStorage.setItem('code_times', JSON.stringify(resp.data.test.time + '000'));
-                                getTime();
+                            if( resp.code == '001' ){
+                                num = resp.message;
+                                $('.code-btn').text( '重新获取(' + num + ')' );
+                                timer = setInterval(countDown, 1000);
                             }else{
                                 can_get_code = true;
                                 clearInterval(timer);
                                 num = 120;
                                 $('.code-btn').text( '获取验证码' );
+                                $.alert(resp.message, '提示');
                             }
-                            $.alert(resp.data.message, '提示');
                         }
                     },
                     error: function (data) {

@@ -190,7 +190,7 @@ class Login extends FirstClass
     {
         //验证条件
         $rule = [
-            'account' => 'require|max:20|min:6',
+            'account' => 'require|max:20|min:6|unique:member,account',
             'pass' => 'require|max:20|min:6',
             'again' => 'require|max:20|min:6',
             'referee_account' => 'min:6|max:20',
@@ -464,7 +464,7 @@ class Login extends FirstClass
     public function validator_sms_register($phone, $time)
     {
         $term = [
-            'phone' => 'require|length:11|unique:member,account',//联系电话，必填
+            'phone' => 'require|length:11',//联系电话，必填
         ];
 
         $errors = [

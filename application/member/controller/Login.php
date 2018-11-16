@@ -101,9 +101,9 @@ class Login extends Controller
 
         Db::commit();
 
-        session('errors', '注册成功');
+//        session('errors', '注册成功');
 
-        return $this->class->success();
+        return $this->class->success('/index-login');
     }
 
     //静默授权，获取openid
