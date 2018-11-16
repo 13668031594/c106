@@ -327,7 +327,7 @@ class Login extends FirstClass
     {
         //获取openid
         $openid = session('openid');
-
+exit($openid);
         //没有
         if (is_null($openid)) return;
 
