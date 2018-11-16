@@ -57,7 +57,9 @@
             dataType: 'json',
             success: function (resp) {
                 if (resp && resp.status == 'success') {
-                    $.alert('操作成功！');
+                    $.alert('操作成功！',function () {
+                        window.location.href = '/index-crowd';
+                    });
                 } else {
                     if (resp.code == '999') {
                         $.alert('登录失效');
