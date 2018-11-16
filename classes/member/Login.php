@@ -8,6 +8,7 @@
 
 namespace classes\member;
 
+use app\active\model\Active;
 use app\attendance\model\Attendance;
 use app\member\model\MemberRecord;
 use classes\FirstClass;
@@ -353,15 +354,10 @@ class Login extends FirstClass
     //直充付款成功
     public function change_recharge($order_number)
     {
-        $class = new StorageClass('wechat');
-        $class->save('0');
-
         //寻找订单
         $recharge = new \app\recharge\model\Recharge();
         $recharge = $recharge->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
         if (is_null($recharge)) return;
-
-        $class->save('1');
 
         //修改会员状态
         $member = new \app\member\model\Member();
@@ -372,15 +368,10 @@ class Login extends FirstClass
         $member->total += $recharge->total;
         $member->save();
 
-        $class->save('2');
-
-
         //时间
         $date = date('Y-m-d H:i:s');
         $setting = new Setting();
         $set = $setting->index();
-
-        $class->save('3');
 
         //修改订单状态
         $recharge->pay_status = 1;
@@ -391,8 +382,6 @@ class Login extends FirstClass
         $recharge->change_nickname = $recharge->member_nickname;
         $recharge->change_date = $date;
         $recharge->save();
-
-        $class->save('4');
 
         //添加会员记录
         $record = new MemberRecord();
@@ -411,8 +400,55 @@ class Login extends FirstClass
         $record->jpj_now = $member->jpj;
         $record->jpj_all = $member->jpj_all;
         $record->save();
+    }
 
-        $class->save('5');
+    //付款成功
+    public function change_active($order_number)
+    {
+        //寻找订单
+        $active = new Active();
+        $active = $active->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
+        if (is_null($active)) return;
 
+        //修改会员状态
+        $member = new \app\member\model\Member();
+        $member = $member->where('id', '=', $active->member_id)->find();
+        if (is_null($member)) return;
+        $member->total += $active->total;
+        $member->asset_act += $active->asset;
+        $member->save();
+
+        //时间
+        $date = date('Y-m-d H:i:s');
+        $setting = new Setting();
+        $set = $setting->index();
+
+        //修改订单状态
+        $active->pay_status = 1;
+        $active->pay_type = 1;
+        $active->pay_date = $date;
+        $active->order_status = 20;
+        $active->change_id = $active->member_id;
+        $active->change_nickname = $active->member_nickname;
+        $active->change_date = $date;
+        $active->save();
+
+        //添加会员记录
+        $record = new MemberRecord();
+        $record->member_id = $member->id;
+        $record->account = $member->account;
+        $record->nickname = $member->nickname;
+        $record->type = 31;
+        $record->content = '激活订单成功付款，获得『激活' . $set['webAliasAsset'] . '』' . $active->asset;
+        $record->created_at = $date;
+        $record->integral_now = $member->integral;
+        $record->integral_all = $member->integral_all;
+        $record->asset_now = $member->asset;
+        $record->asset_act = $active->asset;
+        $record->asset_act_now = $member->asset_act;
+        $record->asset_all = $member->asset_all;
+        $record->jpj_now = $member->jpj;
+        $record->jpj_all = $member->jpj_all;
+        $record->save();
     }
 }

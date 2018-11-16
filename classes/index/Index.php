@@ -395,56 +395,6 @@ class Index extends FirstClass
         return $sign;
     }
 
-    //付款成功
-    public function change($order_number)
-    {
-        //寻找订单
-        $active = new Active();
-        $active = $active->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
-        if (is_null($active)) return;
-
-        //修改会员状态
-        $member = new Member();
-        $member = $member->where('id', '=', $active->member_id)->find();
-        if (is_null($member)) return;
-        $member->total += $active->total;
-        $member->asset_act += $active->asset;
-        $member->save();
-
-        //时间
-        $date = date('Y-m-d H:i:s');
-        $setting = new Setting();
-        $set = $setting->index();
-
-        //修改订单状态
-        $active->pay_status = 1;
-        $active->pay_type = 1;
-        $active->pay_date = $date;
-        $active->order_status = 20;
-        $active->change_id = $active->member_id;
-        $active->change_nickname = $active->member_nickname;
-        $active->change_date = $date;
-        $active->save();
-
-        //添加会员记录
-        $record = new MemberRecord();
-        $record->member_id = $member->id;
-        $record->account = $member->account;
-        $record->nickname = $member->nickname;
-        $record->type = 31;
-        $record->content = '激活订单成功付款，获得『激活' . $set['webAliasAsset'] . '』' . $active->asset;
-        $record->created_at = $date;
-        $record->integral_now = $member->integral;
-        $record->integral_all = $member->integral_all;
-        $record->asset_now = $member->asset;
-        $record->asset_act= $active->asset;
-        $record->asset_act_now = $member->asset_act;
-        $record->asset_all = $member->asset_all;
-        $record->jpj_now = $member->jpj;
-        $record->jpj_all = $member->jpj_all;
-        $record->save();
-    }
-
     //轮询
     public function info($id)
     {

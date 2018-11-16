@@ -133,42 +133,34 @@ class Login extends Controller
 
     public function notify_recharge(Request $request)
     {
-        try{
+        Db::startTrans();
 
-            Db::startTrans();
+        //初始化操作类
+        $class = new Wechat();
 
-            //初始化操作类
-            $class = new Wechat();
+        //获取微信回调信息，xml格式
+        $xml = $request->getContent();
 
-            //获取微信回调信息，xml格式
-            $xml = $request->getContent();
+        //转为array
+        $array = $class->xml_to_array($xml);
 
-            //转为array
-            $array = $class->xml_to_array($xml);
+        //添加支付记录
+        $model = $class->is_pay($array, $xml);
 
-            //添加支付记录
-            $model = $class->is_pay($array, $xml);
+        //判断,已经添加过了
+        if ($model === false) return 'success';
 
-            //判断,已经添加过了
-            if ($model === false) return 'success';
+        //判断
+        if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
-            //判断
-            if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
-
-                //付款成功
-                $this->class->change_recharge($model->order_number);
-            }
-
-            Db::commit();
-
-            //返回微信回调成功
-            return 'success';
-        }catch (Exception $exception){
-
-            $class = new StorageClass('wechat');
-            $class->save($exception->getMessage());
-            exit;
+            //付款成功
+            $this->class->change_recharge($model->order_number);
         }
+
+        Db::commit();
+
+        //返回微信回调成功
+        return 'success';
     }
 
     public function notify_active(Request $request)
@@ -193,10 +185,8 @@ class Login extends Controller
         //判断
         if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
-            $class = new Index();
-
             //付款成功
-            $class->change($model->order_number);
+            $this->class->change_active($model->order_number);
         }
 
         Db::commit();
