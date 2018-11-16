@@ -121,6 +121,7 @@ class Recharge extends FirstClass
         $class = new Wechat();
 
         $result = $class->jsapi($result);
+        dump($result);exit;
 
         //重新配置并获取微信签名
         $sign = $class->jsapi_sign($result);
