@@ -76,26 +76,8 @@
     });
 
     $('.pay-sure').on('click', function () {
-        wechat_data.timeStamp.toString();
         moneyPay();
     });
-    var wechat_data = JSON.parse({$wechat});
-    var order_id = '{$order["id"]}';
-    var getStatus = null;
-
-    //支付判断是否在微信浏览器内
-    function moneyPay() {
-        if (typeof WeixinJSBridge == "undefined") {
-            if (document.addEventListener) {
-                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-            } else if (document.attachEvent) {
-                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-            }
-        } else {
-            onBridgeReady();
-        }
-    }
 
     var wechat_test = '{$wechat}';
     var wechat_data = JSON.parse(wechat_test);
