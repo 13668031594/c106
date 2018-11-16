@@ -314,13 +314,13 @@ class Member extends FirstClass implements ListInterface
 
         switch (input('type')) {
             case '1':
-                $where['asset|asset_act'] = ['>', 0];
+                $where['asset|asset_act'] = ['<>', 0];
                 break;
             case '2':
-                $where['integral'] = ['>', 0];
+                $where['integral'] = ['<>', 0];
                 break;
             case '3':
-                $where['jpj'] = ['>', 0];
+                $where['jpj'] = ['<>', 0];
                 break;
             default:
                 break;
