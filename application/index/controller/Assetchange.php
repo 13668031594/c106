@@ -22,7 +22,7 @@ class AssetChange extends Controller
 
         $this->class->out();
 
-        return $this->class->success();
+        return $this->class->success('/');
     }
 
     public function exchange()
@@ -31,6 +31,6 @@ class AssetChange extends Controller
 
         $this->class->exchange();
 
-        return $this->class->success();
+        return $this->class->success('/');
     }
 }

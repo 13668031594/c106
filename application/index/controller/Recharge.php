@@ -33,7 +33,7 @@ class Recharge extends Controller
     {
         $this->class->info($id);
 
-        return $this->class->success();
+        return $this->class->success('/');
     }
 
     public function out($id)

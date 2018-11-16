@@ -42,7 +42,7 @@ class Personal extends Controller
     public function nickname()
     {
         $this->class->nickname();
-        return $this->class->success();
+        return $this->class->success('/');
     }
 
     //登录密码修改页面
@@ -55,7 +55,7 @@ class Personal extends Controller
     public function password()
     {
         $this->class->password();
-        return $this->class->success();
+        return $this->class->success('/');
     }
 
     //支付密码修改页面
@@ -68,7 +68,7 @@ class Personal extends Controller
     public function pay_password()
     {
         $this->class->pay_pass();
-        return $this->class->success();
+        return $this->class->success('/');
     }
 
     //分享
