@@ -154,7 +154,8 @@ class Login extends Controller
 
             //判断
             if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
-
+                $class = new StorageClass('wechat');
+                $class->save('1314');
                 //付款成功
                 $this->class->change_recharge($model->order_number);
             }
