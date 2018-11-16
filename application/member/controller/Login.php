@@ -3,6 +3,7 @@
 namespace app\member\controller;
 
 use classes\index\Index;
+use classes\index\Recharge;
 use classes\vendor\StorageClass;
 use classes\vendor\Wechat;
 use think\Controller;
@@ -150,9 +151,7 @@ class Login extends Controller
 
             //判断,已经添加过了
             if ($model === false) return 'success';
-            $class = new StorageClass('wechat');
-            $class->save('3334');
-            exit;
+
             //判断
             if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
