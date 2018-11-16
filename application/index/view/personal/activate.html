@@ -128,7 +128,7 @@
                 getStatus = setInterval(() => {
                     $.ajax({
                         type: 'get',
-                        url: '/index-act/' + order_id,
+                        url: '/index-act-info/' + order_id,
                         dataType: 'json',
                         success: function(resp){
                             console.log('data', resp);
