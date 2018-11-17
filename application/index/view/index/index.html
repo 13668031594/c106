@@ -3,20 +3,22 @@
 {include file="index@Index/header2"}
 <!-- 菜单栏 -->
 <ul class="menu">
-    <li><a href="/index-family"><span class="iconfont icon-jituanjiapu" style="font-size: 2.5rem;"></span>家谱</a></li>
-    <li><a href="/index-memorial"><span class="iconfont icon-miao" style="font-size: 2.6rem;"></span>纪念堂</a></li>
-    <li><a href="/index-shared"><span class="iconfont icon-gongxiang" style="font-size: 2.5rem;"></span>家族共享</a></li>
-    <li><a href="/index-information"><span class="iconfont icon-zixunzhongxin" style="font-size: 2rem;"></span>资讯中心</a>
-    </li>
     <li><a href="/index-crowd"><span class="iconfont icon-zhongchou" style="font-size: 2.7rem;"></span>众筹</a></li>
     <li><a href="/index-financial?type=1"><span class="iconfont icon-caiwu" style="font-size: 2.4rem;"></span>财务</a>
     </li>
     <li><a href="/index-shift-to-qr"><span class="iconfont icon-zhuanru" style="font-size: 2.1rem;"></span>转入</a></li>
     <li><a href="/index-roll-out/0"><span class="iconfont icon-zhuanchu" style="font-size: 2.1rem;"></span>转出</a></li>
     <li><a href="/index-exchange"><span class="iconfont icon-zhuanhuan" style="font-size: 2.1rem;"></span>转换</a></li>
+    <li><a href="javascript:$.toast('正在开发中', 'text');"><span class="iconfont icon-svgmoban64"
+                                                             style="font-size: 3rem;"></span>游戏</a></li>
+    <li><a href="/index-family"><span class="iconfont icon-jituanjiapu" style="font-size: 2.5rem;"></span>家谱</a></li>
+    <li><a href="/index-memorial"><span class="iconfont icon-miao" style="font-size: 2.6rem;"></span>纪念堂</a></li>
+    <li><a href="/index-information"><span class="iconfont icon-zixunzhongxin" style="font-size: 2rem;"></span>资讯中心</a>
+    <li><a href="/index-shared"><span class="iconfont icon-gongxiang" style="font-size: 2.5rem;"></span>家族共享</a></li>
+    </li>
 </ul>
 
-{if $first_login == '1'}
+{if !empty($first_login)}
 <!-- 红包 -->
 <div class="draw-gift">
     <div class="draw-img">
@@ -25,7 +27,11 @@
         <div class="draw-mid draw-mid-move"></div>
         <div class="draw-down"></div>
         <div class="draw-down2"></div>
-        <!--<div class="draw-list"><img src="image/open-hagen.jpg"></div>-->
+        <div class="draw-list">
+            <p class="draw-list-num">{$first_login}</p>   <!-- 获得资产 -->
+            <p class="draw-list-title">获得资产</p>
+        </div>
+        <span class="draw-close">✕</span>
     </div>
     <!--<a href="javascript:;" id="draw-btn">点击打开</a>-->
 </div>
@@ -41,20 +47,24 @@
         }, 100);
         $("#draw-up-up").animate({
             opacity: "1",
-            top: "-5rem"
+            top: "-6rem"
         }, 200);
 
         $(".draw-down").animate({
             opacity: "0"
         }, 300);
 
-        setTimeout(function () {
+        $(".draw-close").show().on('click', function () {
             $('.draw-gift').hide();
-        }, 1000);
+        });
+
+        /*setTimeout(function(){
+            $('.draw-gift').hide();
+        }, 1000);*/
         /*$(".draw-down2").animate({
             opacity: "1"
         }, 300);*/
-        //$(".draw-list").animate({opacity:"1"},600).animate({top:"-4.4rem"},1000);
+        $(".draw-list").animate({opacity: "1"}, 600).animate({top: "-3rem"}, 1000);
     });
 </script>
 

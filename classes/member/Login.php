@@ -149,7 +149,7 @@ class Login extends FirstClass
         $attendance->created_at = date('Y-m-d H:i:s');
         $attendance->save();
 
-        session('first_login', '1');
+        session('first_login', $asset);
     }
 
     /**
@@ -241,6 +241,7 @@ class Login extends FirstClass
         $nickname = substr($phone, 0, 3) . '****' . substr($phone, 7);
         $pass = input('pass');
 
+        $member->created_at = date('Y-m-d H:i:s');
         $member->phone = $phone;
         $member->account = $phone;
         $member->nickname = $nickname;
