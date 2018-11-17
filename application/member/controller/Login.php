@@ -50,13 +50,15 @@ class Login extends Controller
         $this->class->save_account($member->account);
 
         //保存登陆者session
-        $this->class->refresh_login_member($member->id);
+        $login_ass = $this->class->refresh_login_member($member->id);
 
         //首次登录
         $this->class->first_login($member);
 
         //绑定微信
         $this->class->wechat_banding($member->id);
+
+        session('login_ass', $login_ass);
 
         Db::commit();
 

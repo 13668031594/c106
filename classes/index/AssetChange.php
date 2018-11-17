@@ -26,7 +26,7 @@ class AssetChange extends FirstClass
     {
         $this->member = parent::is_login_member();
 
-        if ($this->member['status'] == '1')parent::ajax_exception(000,'您的账号被冻结了');
+        if ($this->member['status'] == '1') parent::ajax_exception(000, '您的账号被冻结了');
     }
 
     //转出3连
@@ -274,8 +274,14 @@ class AssetChange extends FirstClass
             case '2':
                 self::exchange2();
                 break;
-            case '3':
-                self::exchange3();
+//            case '3':
+//                self::exchange3();
+//                break;
+            case '4':
+                self::exchange4();
+                break;
+            case '5':
+                self::exchange5();
                 break;
             default:
                 parent::ajax_exception(000, '转换模式错误');
@@ -316,7 +322,7 @@ class AssetChange extends FirstClass
         $records['jpj_now'] = $this->member['jpj'];
         $records['jpj_all'] = $this->member['jpj'];
         $records['type'] = 70;
-        $records['content'] = $this->set['webAliasAsset'] . '(' . $number . '),转换为' . $this->set['webAliasPoint'] . '(' . $exchange . '),转换比例为' . $this->set['webApAsset'] . ':' . $this->set['webApIntegral'];
+        $records['content'] = '『' . $this->set['webAliasAsset'] . '』(' . $number . '),转换为『' . $this->set['webAliasPoint'] . '』(' . $exchange . '),转换比例为' . $this->set['webApAsset'] . ':' . $this->set['webApIntegral'];
         $records['created_at'] = date('Y-m-d H:i:s');
 
         $member = new Member();
@@ -353,7 +359,7 @@ class AssetChange extends FirstClass
         $records['asset_act_now'] = $this->member['asset_act'];
         $records['asset_all'] = $this->member['asset_all'];
         $records['type'] = 70;
-        $records['content'] = $this->set['webAliasAsset'] . '(' . $number . '),转换为' . $this->set['webAliasJpj'] . '(' . $exchange . '),转换比例为' . $this->set['webJaAsset'] . ':' . $this->set['webJaJpj'];
+        $records['content'] = '『' . $this->set['webAliasAsset'] . '』(' . $number . '),转换为『' . $this->set['webAliasJpj'] . '』(' . $exchange . '),转换比例为' . $this->set['webJaAsset'] . ':' . $this->set['webJaJpj'];
         $records['created_at'] = date('Y-m-d H:i:s');
 
         $member = new Member();
@@ -406,7 +412,84 @@ class AssetChange extends FirstClass
         $records['asset_act_now'] = $this->member['asset_act'];
         $records['asset_all'] = $this->member['asset_all'] + $asset;
         $records['type'] = 70;
-        $records['content'] = $this->set['webAliasJpj'] . '(' . $number . '),转换为' . $this->set['webAliasAsset'] . '(' . $asset . '),转换比例为' . $this->set['webJaJpj'] . ':' . $this->set['webJaAsset'] . '，积分比例为' . ((10000 - $this->set['webAllot']) / 100) . '%,转换积分:' . $integral;
+        $records['content'] = '『' . $this->set['webAliasJpj'] . '』(' . $number . '),转换为『' . $this->set['webAliasAsset'] . '』(' . $asset . '),转换比例为' . $this->set['webJaJpj'] . ':' . $this->set['webJaAsset'] . '，积分比例为' . ((10000 - $this->set['webAllot']) / 100) . '%,转换积分:' . $integral;
+        $records['created_at'] = date('Y-m-d H:i:s');
+
+        $member = new Member();
+        $member->saveAll([$update]);
+        $record = new MemberRecord();
+        $record->insert($records);
+    }
+
+    private function exchange4()
+    {
+        //转换数量
+        $number = input('number');
+
+        if ($number > ($this->member['jpj'])) parent::ajax_exception(000, $this->set['webAliasJpj'] . '不足');
+
+        $asset = $number;
+
+        $update['id'] = $this->member['id'];
+        $update['asset_act'] = $this->member['asset_act'] + $asset;
+        $update['asset_all'] = $this->member['asset_all'] + $asset;
+        $update['jpj'] = $this->member['jpj'] - $number;
+
+        $records['member_id'] = $this->member['id'];
+        $records['account'] = $this->member['account'];
+        $records['nickname'] = $this->member['nickname'];
+        $records['jpj'] = 0 - $number;
+        $records['jpj_now'] = $this->member['jpj'] - $number;
+        $records['jpj_all'] = $this->member['jpj_all'];
+        $records['integral_now'] = $this->member['integral'];
+        $records['integral_all'] = $this->member['integral_all'];
+        $records['asset_act'] = $asset;
+        $records['asset_now'] = $this->member['asset'];
+        $records['asset_act_now'] = $this->member['asset_act'] + $asset;
+        $records['asset_all'] = $this->member['asset_all'] + $asset;
+        $records['type'] = 70;
+        $records['content'] = '『' . $this->set['webAliasJpj'] . '』(' . $number . '),转换为『激活' . $this->set['webAliasAsset'] . '』(' . $asset . '),转换比例为1:1';
+        $records['created_at'] = date('Y-m-d H:i:s');
+
+        $member = new Member();
+        $member->saveAll([$update]);
+        $record = new MemberRecord();
+        $record->insert($records);
+    }
+
+    private function exchange5()
+    {
+        //转换数量
+        $number = input('number');
+
+        if ($number > ($this->member['jpj'])) parent::ajax_exception(000, $this->set['webAliasJpj'] . '不足');
+
+        //转换比例
+        $bili = $this->set['webJaAsset'] * $this->set['webApIntegral'] / $this->set['webApAsset'];
+        $integral = $number / $this->set['webJaJpj'] * $bili;
+        $integral = number_format($integral, 2, '.', '');
+
+        if ($integral <= 0) parent::ajax_exception(000, '按当前比例转换后，转入' . $this->set['webAliasPoint'] . '为0，请转换更多' . $this->set['webAliasJpj']);
+
+        $update['id'] = $this->member['id'];
+        $update['integral'] = $this->member['integral'] + $integral;
+        $update['integral_all'] = $this->member['integral_all'] + $integral;
+        $update['jpj'] = $this->member['jpj'] - $number;
+
+        $records['member_id'] = $this->member['id'];
+        $records['account'] = $this->member['account'];
+        $records['nickname'] = $this->member['nickname'];
+        $records['jpj'] = 0 - $number;
+        $records['jpj_now'] = $this->member['jpj'] - $number;
+        $records['jpj_all'] = $this->member['jpj_all'];
+        $records['integral'] = $integral;
+        $records['integral_now'] = $this->member['integral'] + $integral;
+        $records['integral_all'] = $this->member['integral_all'] + $integral;
+        $records['asset_now'] = $this->member['asset'];
+        $records['asset_act_now'] = $this->member['asset_act'];
+        $records['asset_all'] = $this->member['asset_all'];
+        $records['type'] = 70;
+        $records['content'] = '『' . $this->set['webAliasJpj'] . '』(' . $number . '),转换为『' . $this->set['webAliasPoint'] . '』(' . $integral . '),转换比例为' . $this->set['webJaJpj'] . ':' . $bili;
         $records['created_at'] = date('Y-m-d H:i:s');
 
         $member = new Member();

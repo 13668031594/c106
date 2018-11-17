@@ -101,16 +101,16 @@ class Login extends FirstClass
         }
 
         //日转积分
-        $integer = number_format(($member->integral * $bili / 10000), 2, '.', '');
+        $integer = $asset = number_format(($member->integral * $bili / 10000), 2, '.', '');
 
         //没有积分转出
         if ($integer <= 0) return '0';
 
         //转换资产
-        $asset = number_format(($integer / $set['webApIntegral'] * $set['webApAsset']), 2, '.', '');
+//        $asset = number_format(($integer / $set['webApIntegral'] * $set['webApAsset']), 2, '.', '');
 
         //没有资产转入
-        if ($asset <= 0) return '0';
+//        if ($asset <= 0) return '0';
 
         $member->integral -= $integer;
         $member->asset += $asset;
@@ -139,7 +139,7 @@ class Login extends FirstClass
         $attendance->integral_now = $member->integral;
         $attendance->asset = $asset;
         $attendance->asset_now = $member->asset;
-        $attendance->proportion = $set['webApAsset'] . ':' . $set['webApIntegral'];
+        $attendance->proportion = '1:1';
         $attendance->conversion = $bili;
         $attendance->member_id = $member->id;
         $attendance->member_account = $member->account;
@@ -688,13 +688,13 @@ class Login extends FirstClass
         $phone = input('account');
 
         $test = new Sms();
-        $test = $test->where('phone','=',$phone)->order('created_at','desc')->find();
+        $test = $test->where('phone', '=', $phone)->order('created_at', 'desc')->find();
 
-        if (is_null($test))parent::ajax_exception(000,'请重新获取验证码');
+        if (is_null($test)) parent::ajax_exception(000, '请重新获取验证码');
 
-        if ($test->end < time())parent::ajax_exception(000,'验证码已过期');
+        if ($test->end < time()) parent::ajax_exception(000, '验证码已过期');
 
-        if ($test->code != $code)parent::ajax_exception(000,'验证码错误');
+        if ($test->code != $code) parent::ajax_exception(000, '验证码错误');
 
     }
 }

@@ -92,9 +92,14 @@ class FirstClass
 //        return;
         //尝试获取session中的member信息
         $member = session('member');
-
+//dump($member);
+//exit;
         //验证session中的信息格式与过期时间
-        if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['time']) || ($member['time'] < time())) self::redirect_exception('/index-logout');
+        if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['login_ass']) || !isset($member['time']) || ($member['time'] < time())) self::redirect_exception('/index-logout');
+
+        $login_ass = session('login_ass');
+
+        if ($login_ass != $member['login_ass']) self::redirect_exception('/index-logout');
 
         //赋值会员id
         $member_id = $member['id'];
@@ -119,9 +124,7 @@ class FirstClass
 
         //登录ip不同，证明在其他地方登录，跳转至登录页面
         if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
-//dump($login_ip);
-//dump($member['login_ip']);
-//exit;
+
         //更新操作时间
         self::refresh_login_member($member_id);
 
@@ -140,10 +143,13 @@ class FirstClass
 
         $member = [
             'id' => $member_id,
-            'time' => time() + $set->login_time
+            'time' => time() + $set->login_time,
+            'login_ass' => md5(time() . rand(100,999)),
         ];
 
         session('member', $member);
+
+        return $member['login_ass'];
     }
 
     /**
