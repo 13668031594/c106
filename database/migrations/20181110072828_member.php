@@ -38,6 +38,7 @@ class Member extends Migrator
         //登录字段
         $table->addColumn(Column::integer('login_times')->setDefault(0)->setComment('登录次数'));
         $table->addColumn(Column::string('login_ip')->setNullable()->setComment('登录ip'));
+        $table->addColumn(Column::string('login_ass')->setNullable()->setComment('登录验证'));
         $table->addColumn(Column::timestamp('login_time')->setNullable()->setComment('登录时间'));
         $table->addColumn(Column::timestamp('created_at')->setNullable()->setComment('创建时间'));
         $table->addColumn(Column::timestamp('updated_at')->setNullable()->setComment('更新时间'));

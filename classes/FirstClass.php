@@ -92,14 +92,12 @@ class FirstClass
 //        return;
         //尝试获取session中的member信息
         $member = session('member');
-//dump($member);
-//exit;
+
         //验证session中的信息格式与过期时间
         if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['login_ass']) || !isset($member['time']) || ($member['time'] < time())) self::redirect_exception('/index-logout');
 
-        $login_ass = session('login_ass');
-
-        if ($login_ass != $member['login_ass']) self::redirect_exception('/index-logout');
+        $login_ass = $member['login_ass'];
+//dump($login_ass);
 
         //赋值会员id
         $member_id = $member['id'];
@@ -115,7 +113,8 @@ class FirstClass
 
         //获取资料数组，去其他数据
         $member = $member->getData();
-
+//        dump($member['login_ass']);
+//exit;
         //验证状态
         if ($member['status'] >= $status) self::redirect_exception('/', '您的账号已经被『' . ($status == '1' ? '冻结' : '禁用') . '』');
 
@@ -125,8 +124,10 @@ class FirstClass
         //登录ip不同，证明在其他地方登录，跳转至登录页面
         if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
 
+        if ($login_ass != $member['login_ass']) self::redirect_exception('/index-logout');
+
         //更新操作时间
-        self::refresh_login_member($member_id,$login_ass);
+        self::refresh_login_member($member_id, $login_ass);
 
         //验证成功，返回会员模型
         return $member;
@@ -136,20 +137,19 @@ class FirstClass
      * 重置登录时间
      *
      * @param $member_id
+     * @param $login_ass
      */
-    public function refresh_login_member($member_id,$login_ass=null)
+    public function refresh_login_member($member_id, $login_ass)
     {
         $set = new LoginSet();
 
         $member = [
             'id' => $member_id,
             'time' => time() + $set->login_time,
-            'login_ass' => is_null($login_ass) ? md5(time() . rand(100,999)) : $login_ass,
+            'login_ass' => $login_ass,
         ];
 
         session('member', $member);
-
-        return $member['login_ass'];
     }
 
     /**

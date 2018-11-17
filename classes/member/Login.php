@@ -172,7 +172,10 @@ class Login extends FirstClass
         $member->login_times += 1;
         $member->login_time = date('Y-m-d H:i:s');
         $member->login_ip = $_SERVER["REMOTE_ADDR"];
+        $member->login_ass = md5(time() . rand(100, 999));
         $member->save();
+
+        return $member->login_ass;
     }
 
     /**
