@@ -126,7 +126,7 @@ class FirstClass
         if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
 
         //更新操作时间
-        self::refresh_login_member($member_id);
+        self::refresh_login_member($member_id,$login_ass);
 
         //验证成功，返回会员模型
         return $member;
@@ -137,14 +137,14 @@ class FirstClass
      *
      * @param $member_id
      */
-    public function refresh_login_member($member_id)
+    public function refresh_login_member($member_id,$login_ass=null)
     {
         $set = new LoginSet();
 
         $member = [
             'id' => $member_id,
             'time' => time() + $set->login_time,
-            'login_ass' => md5(time() . rand(100,999)),
+            'login_ass' => is_null($login_ass) ? md5(time() . rand(100,999)) : $login_ass,
         ];
 
         session('member', $member);
