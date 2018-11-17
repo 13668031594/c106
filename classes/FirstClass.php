@@ -119,9 +119,9 @@ class FirstClass
 
         //登录ip不同，证明在其他地方登录，跳转至登录页面
         if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
-dump($login_ip);
-dump($member['login_ip']);
-exit;
+//dump($login_ip);
+//dump($member['login_ip']);
+//exit;
         //更新操作时间
         self::refresh_login_member($member_id);
 
