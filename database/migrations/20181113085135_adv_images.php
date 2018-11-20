@@ -10,7 +10,7 @@ class AdvImages extends Migrator
         $table = $this->table('adv_images');
         $table->setId('id');
         $table->addColumn(Column::integer('adv')->setNullable()->setComment('广告id'));
-        $table->addColumn(Column::char('location')->setComment('图片路径'));
+        $table->addColumn(Column::string('location')->setComment('图片路径'));
         $table->addColumn(Column::timestamp('created_at')->setNullable()->setComment('创建时间'));
         $table->save();
     }

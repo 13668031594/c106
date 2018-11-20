@@ -84,6 +84,9 @@ class Adv extends FirstClass implements ListInterface
 
         $image->adv = $model->id;
         $image->save();
+
+        $images = new AdvImages();
+        $images->where('adv','=',$model->id)->where('id','<>',$image->id)->update(['adv' => null]);
     }
 
     public function delete($id)
@@ -179,8 +182,8 @@ class Adv extends FirstClass implements ListInterface
         $result = $model->where('created_at', '<', $date)->where('adv', null)->select();
 
         if (count($result) > 0)foreach ($result as $v) {
-
-            if (!is_null($v->location)) unlink($v->location);
+//            unlink(substr($v->location, 1))
+            if (!is_null($v->location) && is_file($v->location)) unlink($v->location);
         }
 
         $model = new AdvImages();
