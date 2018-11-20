@@ -30,6 +30,7 @@
         <input type="hidden" id='webSwitchValue' name="webSwitch" value="{$webSwitch}"/>
         <input type="hidden" id="userRegisterSwitch" name="userRegisterSwitch" value="{$userRegisterSwitch}"/>
         <input type="hidden" id="webDaySwitch" name="webDaySwitch" value="{$webDaySwitch}"/>
+        <input type="hidden" id="payRechargeSwitch" name="payRechargeSwitch" value="{$payRechargeSwitch}"/>
 
         <div class="layui-tab layui-tab-card" lay-filter="tab">
             <ul class="layui-tab-title">
@@ -274,6 +275,15 @@
                 <div class="layui-form-min">
 
                     <div class="layui-form-item">
+                        <label class="layui-form-label">众筹开关</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" lay-filter="payRechargeSwitch"
+                                   lay-skin="switch" value="{$payRechargeSwitch}"
+                                   lay-text="开启|关闭" {if $payRechargeSwitch == 'on'}checked{/if} />
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
                         <label class="layui-form-label">激活比例</label>
                         <div class="layui-input-inline">
                             <input type="text" name="payActAllot" lay-verify="numberZ" title="激活比例"
@@ -398,6 +408,14 @@
                 $('#webDaySwitch').prop('value', 'on');
             } else {
                 $('#webDaySwitch').prop('value', 'off');
+            }
+        });
+
+        form.on('switch(payRechargeSwitch)', function (data) {
+            if (data.elem.checked) {
+                $('#payRechargeSwitch').prop('value', 'on');
+            } else {
+                $('#payRechargeSwitch').prop('value', 'off');
             }
         });
     });

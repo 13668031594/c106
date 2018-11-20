@@ -99,6 +99,7 @@ class Setting extends FirstClass
             'webScale' => 'require|integer|min:1|max:10000',
             'webSwitch' => 'require',
             'webCloseReason' => 'min:0|max:1000',
+            'payRechargeSwitch' => 'require',
         ];
 
         $file = [
@@ -128,6 +129,7 @@ class Setting extends FirstClass
             'webScale' => '日转比例',
             'webSwitch' => '网站开关',
             'webCloseReason' => '网站关闭理由',
+            'payRechargeSwitch' => '众筹开关'
         ];
 
         $result = parent::validator(input(), $rule, [], $file);
@@ -154,6 +156,8 @@ class Setting extends FirstClass
             'payActAllot' => "2000",
             //收付款基数
             'payActBase' => "100",
+            //众筹开关
+            'payRechargeSwitch' => "on",
             //加速比例-比例
             'speedAllot' => "100",
             //加速比例-积分

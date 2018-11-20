@@ -30,6 +30,11 @@ class Recharge extends FirstClass
     //验证下单字段
     public function validator_save()
     {
+        $setting = new Setting();
+        $set = $setting->index();
+
+        if ($set['payRechargeSwitch'] == 'off') parent::ajax_exception(000, '众筹已关闭');
+
         $rule = [
             'amount' => 'require|integer|between:1,100000000',
             'pay_pass' => 'require',
@@ -53,15 +58,12 @@ class Recharge extends FirstClass
         //验证是否有未完结的订单
         $model = new \app\recharge\model\Recharge();
         $test = $model->where('member_id', '=', $this->member['id'])->where('order_status', '=', '10')->order('created_at', 'desc')->find();
-        if (!is_null($test))parent::ajax_exception(00,'您有一个未完结的订单，请完结后再试。');
+        if (!is_null($test)) parent::ajax_exception(00, '您有一个未完结的订单，请完结后再试。');
 
         //验证支付密码
         if (md5(input('pay_pass')) != $this->member['pay_pass']) parent::ajax_exception(000, '支付密码错误');
 
         //验证兑换比例
-        $setting = new Setting();
-        $set = $setting->index();
-
         if ((input('webAjAmount') != $set['webAjAmount']) || (input('webAjJpj') != $set['webAjJpj'])) parent::ajax_exception(000, '请刷新重试001');
     }
 
