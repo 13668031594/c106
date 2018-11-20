@@ -206,6 +206,7 @@ class AssetChange extends FirstClass
 
                 $update[$v]['id'] = $m['id'];
                 $update[$v]['asset'] = $m['asset'] + $number;
+                $update[$v]['asset_act'] = $m['asset_act'];
                 $update[$v]['asset_all'] = $m['asset_all'] + $number;
             }
 

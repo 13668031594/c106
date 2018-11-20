@@ -60,7 +60,7 @@ class PayAgreement extends FirstClass
     public function save_validator()
     {
         $rule = [
-            'fwb-content' => 'min:0|max:2000',
+            'fwb-content' => 'min:0|max:50000',
         ];
 
         $file = [
