@@ -141,6 +141,8 @@ Route::get('index-roll-out/:id', 'index/Index/roll_out');//转出
 Route::post('index-roll-out', 'index/Assetchange/asset_out');//转出
 Route::get('index-exchange', 'index/Index/exchange');//转换
 Route::post('index-exchange', 'index/Assetchange/exchange');//转换
+Route::get('index-worship','index/Index/worship');//祭拜
+Route::get('index-added','index/Index/added');//增值服务worship.html
 
 //个人中心
 Route::get('index-personal', 'index/Personal/personal');

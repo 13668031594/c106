@@ -184,4 +184,20 @@ class Index extends Controller
 
         return $this->class->view('exchange', $result);
     }
+
+    //祭拜
+    public function worship()
+    {
+        $result = $this->class->header2('祭拜');
+
+        return $this->class->view('worship',$result);
+    }
+
+    //增值服务
+    public function added()
+    {
+        $result = $this->class->header2('增值服务');
+
+        return $this->class->view('added',$result);
+    }
 }
