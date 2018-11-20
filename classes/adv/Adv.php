@@ -178,11 +178,12 @@ class Adv extends FirstClass implements ListInterface
 
         $result = $model->where('created_at', '<', $date)->where('adv', null)->select();
 
-        foreach ($result as $v) {
+        if (count($result) > 0)foreach ($result as $v) {
 
             if (!is_null($v->location)) unlink($v->location);
         }
 
+        $model = new AdvImages();
         $model->where('created_at', '<', $date)->where('adv', null)->delete();
     }
 }
