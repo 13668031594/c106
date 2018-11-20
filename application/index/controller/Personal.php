@@ -131,4 +131,20 @@ class Personal extends Controller
 
         return $this->class->success('/');
     }
+
+    //支付记录
+    public function pay_note()
+    {
+        $result = $this->class->pay_note();
+
+        return $this->class->view('pay-note',$result);
+    }
+
+    //财务翻页
+    public function pay_note_table()
+    {
+        $result = $this->class->pay_note();
+
+        return $this->class->table($result);
+    }
 }

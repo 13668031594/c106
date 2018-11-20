@@ -14,6 +14,7 @@ use app\adv\model\Adv;
 use app\article\model\Article;
 use app\member\model\MemberRecord;
 use app\notice\model\Notice;
+use app\recharge\model\RechargePay;
 use classes\FirstClass;
 use classes\member\Member;
 use classes\set\ContrastArrays;
@@ -287,7 +288,7 @@ class Index extends FirstClass
         //验证是否有未完结的订单
         $model = new Active();
         $test = $model->where('member_id', '=', $this->member['id'])->where('order_status', '=', '10')->order('created_at', 'desc')->find();
-        if (!is_null($test))parent::ajax_exception(00,'您有一个未完结的订单，请完结后再试。');
+        if (!is_null($test)) parent::ajax_exception(00, '您有一个未完结的订单，请完结后再试。');
 
 
         //验证支付密码
@@ -444,7 +445,7 @@ class Index extends FirstClass
         $active->save();
 
         $member = new \app\member\model\Member();
-        $member = $member->where('id','=',$this->member['id'])->find();
+        $member = $member->where('id', '=', $this->member['id'])->find();
         $member->asset += $active->asset;
         $member->save();
 
@@ -465,5 +466,37 @@ class Index extends FirstClass
         $record->jpj_now = $member->jpj;
         $record->jpj_all = $member->jpj_all;
         $record->save();
+    }
+
+    //支付记录
+    public function pay_note()
+    {
+        $recharge = new \app\recharge\model\Recharge();
+        $r = $recharge->where('member_id', '=', $this->member['id'])->column('order_number');
+
+        $active = new Active();
+        $a = $active->where('member_id', '=', $this->member['id'])->column('order_number');
+
+        $number = array_merge($r, $a);
+
+        if (count($number) <= 0) return [
+//            'current_page' => $number == 0 ? 0 : $page,
+//            'first_page' => $number == 0 ? 0 : 1,
+//            'last_page' => $number == 0 ? 0 : ceil($number / $limit),
+            'total' => 0,
+            'message' => [],
+        ];
+
+        $model = new RechargePay();
+
+        $result = parent::page($model, 'make_time', 'desc', ['order_number' => ['in', $number]]);
+
+        foreach ($result['message'] as &$v) {
+            if ($v['trade_type'] == 'active') $v['trade_type'] = '激活订单';
+            elseif ($v['trade_type'] == 'recharge') $v['trade_type'] = '直充订单';
+            else $v['trade_type'] = '未知';
+        }
+
+        return $result;
     }
 }
