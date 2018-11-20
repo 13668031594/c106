@@ -16,6 +16,7 @@ use app\master\model\Master;
 use app\member\model\Member;
 use app\notice\model\Notice;
 use classes\set\LoginSet;
+use classes\setting\Setting;
 use think\Db;
 use think\Model;
 use think\Validate;
@@ -89,7 +90,6 @@ class FirstClass
      */
     public function is_login_member($status = 2)
     {
-//        return;
         //尝试获取session中的member信息
         $member = session('member');
 
@@ -97,7 +97,6 @@ class FirstClass
         if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['login_ass']) || !isset($member['time']) || ($member['time'] < time())) self::redirect_exception('/index-logout');
 
         $login_ass = $member['login_ass'];
-//dump($login_ass);
 
         //赋值会员id
         $member_id = $member['id'];
@@ -113,8 +112,7 @@ class FirstClass
 
         //获取资料数组，去其他数据
         $member = $member->getData();
-//        dump($member['login_ass']);
-//exit;
+
         //验证状态
         if ($member['status'] >= $status) self::redirect_exception('/', '您的账号已经被『' . ($status == '1' ? '冻结' : '禁用') . '』');
 
@@ -124,6 +122,7 @@ class FirstClass
         //登录ip不同，证明在其他地方登录，跳转至登录页面
         if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
 
+        //登录地点验证
         if ($login_ass != $member['login_ass']) self::redirect_exception('/index-logout');
 
         //更新操作时间
@@ -323,6 +322,12 @@ class FirstClass
         return null;
     }
 
+    /**
+     * 列表数据
+     *
+     * @param array $result
+     * @return \think\response\Json
+     */
     public function table($result = [])
     {
         $result['status'] = 'success';
@@ -330,5 +335,14 @@ class FirstClass
         return json($result);
     }
 
+    /**
+     * 网站关闭
+     */
+    public function web_close()
+    {
+        $setting = new Setting();
+        $set = $setting->index();
 
+        if ($set['webSwitch'] == 'off') exit(empty($set['webCloseReason']) ? '网站维护中' : $set['webCloseReason']);
+    }
 }

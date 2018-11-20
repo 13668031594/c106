@@ -28,6 +28,44 @@ class Login extends FirstClass
         return session('member_account');
     }
 
+
+    public function loged()
+    {
+        //尝试获取session中的member信息
+        $member = session('member');
+
+        //验证session中的信息格式与过期时间
+        if (is_null($member) || !is_array($member) || !isset($member['id']) || !isset($member['login_ass']) || !isset($member['time']) || ($member['time'] < time())) return true;
+
+        $login_ass = $member['login_ass'];
+
+        //赋值会员id
+        $member_id = $member['id'];
+
+        //初始化会员模型
+        $member = new \app\member\model\Member();
+
+        //尝试获取会员资料
+        $member = $member->where('id', '=', $member_id)->find();
+
+        //没有获取到会员资料，跳转至登录页面
+        if (is_null($member)) return true;
+
+        //获取资料数组，去其他数据
+        $member = $member->getData();
+
+        //获取当前ip
+        $login_ip = $_SERVER["REMOTE_ADDR"];
+
+        //登录ip不同，证明在其他地方登录，跳转至登录页面
+        if ($login_ip != $member['login_ip']) return true;
+
+        if ($login_ass != $member['login_ass']) return true;
+
+        //验证成功，会员已经登录，应直接跳转到首页
+        return false;
+    }
+
     /**
      * 登录字段验证
      */
@@ -191,6 +229,8 @@ class Login extends FirstClass
      */
     public function validator_reg()
     {
+        if (self::reg_close() == 'off') parent::ajax_exception(000, '注册已关闭');
+
         //验证条件
         $rule = [
             'account' => 'require|max:20|min:6|unique:member,account',
@@ -699,5 +739,16 @@ class Login extends FirstClass
 
         if ($test->code != $code) parent::ajax_exception(000, '验证码错误');
 
+    }
+
+    /**
+     * 注册开关
+     */
+    public function reg_close()
+    {
+        $setting = new Setting();
+        $set = $setting->index();
+
+        return $set['userRegisterSwitch'];
     }
 }

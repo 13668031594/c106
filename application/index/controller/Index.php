@@ -15,6 +15,8 @@ class Index extends Controller
 
         $this->class = new \classes\index\Index();
 
+        $this->class->web_close();
+
         session('floor', 'index');
     }
 

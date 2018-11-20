@@ -52,7 +52,7 @@ class AssetChange extends FirstClass
         $test = input('number') % $set;
         if (!empty($test)) parent::ajax_exception(000, '转出激活' . $asset . '至少为' . $set . '，且为' . $set . '的倍数');
 
-        if ($set > $this->member['asset_act']) parent::ajax_exception(000, '激活' . $asset . '不足');
+        if (input('number') > $this->member['asset_act']) parent::ajax_exception(000, '激活' . $asset . '不足');
 
         $account = input('account');
 
@@ -69,10 +69,14 @@ class AssetChange extends FirstClass
     {
         Db::startTrans();
 
+        $setting = new Setting();
+        $set = $setting->index();
+
         $record = [];
         $update = [];
 
         $number = input('number');//转移资产
+        $asset = number_format($number / $set['webJaJpj'] * $set['webJaAsset'], 2, '.', '');
 
         $member = new Member();//会员模型
 
@@ -91,9 +95,9 @@ class AssetChange extends FirstClass
 
         //转入未激活资产
         $update[$in_member->id]['id'] = $in_member->id;
-        $update[$in_member->id]['asset'] = $in_member->asset + $number;
+        $update[$in_member->id]['asset'] = $in_member->asset + $asset;
         $update[$in_member->id]['asset_act'] = $in_member->asset_act;
-        $update[$in_member->id]['asset_all'] = $in_member->asset_all + $number;
+        $update[$in_member->id]['asset_all'] = $in_member->asset_all + $asset;
 
         $records['member_id'] = $member->id;
         $records['account'] = $member->account;
@@ -118,20 +122,20 @@ class AssetChange extends FirstClass
         $records['nickname'] = $in_member->nickname;
         $records['integral_now'] = $in_member->integral;
         $records['integral_all'] = $in_member->integral_all;
-        $records['asset'] = $number;
-        $records['asset_now'] = $in_member->asset + $number;
+        $records['asset'] = $asset;
+        $records['asset_now'] = $in_member->asset + $asset;
         $records['asset_act'] = 0;
         $records['asset_act_now'] = $in_member->asset_act;
-        $records['asset_all'] = $in_member->asset_all + $number;
+        $records['asset_all'] = $in_member->asset_all + $asset;
         $records['jpj_now'] = $in_member->jpj;
         $records['jpj_all'] = $in_member->jpj_all;
         $records['type'] = 50;
-        $records['content'] = '转入『' . $this->asset . '』' . $number . ',转出账号：' . $member->account;
+        $records['content'] = '转入『' . $this->asset . '』' . $asset . ',转出账号：' . $member->account;
         $records['other'] = $member->id . '_' . $time;
         $records['created_at'] = $date;
         $record[] = $records;
 
-        $result = self::fenyong($in_member->families, $number, $record, $update, $in_member, $member, $date, $time);
+        $result = self::fenyong($in_member->families, $asset, $record, $update, $in_member, $member, $date, $time);
 
         krsort($result['record']);
         $model = new MemberRecord();

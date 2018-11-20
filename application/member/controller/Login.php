@@ -20,22 +20,34 @@ class Login extends Controller
         parent::__construct($request);
 
         $this->class = new \classes\member\Login();
+
+        $this->class->web_close();
     }
 
     //登录页面
     public function view()
     {
+        //验证是否登录
+        $log = $this->class->loged();
+        if (!$log) $this->redirect('/');
+
+        $reg_close = $this->class->reg_close();
+
         //获取保存的账号
         $account = $this->class->account();
 
         //视图
-        return $this->class->view('login', ['account' => $account]);
+        return $this->class->view('login', ['account' => $account,'reg_close' => $reg_close]);
     }
 
     //登录方法
     public function login()
     {
         Db::startTrans();
+
+        //验证是否登录
+        $log = $this->class->loged();
+        if (!$log) $this->redirect('/');
 
         //验证字段
         $this->class->validator_login();
@@ -77,6 +89,10 @@ class Login extends Controller
     //注册页面
     public function reg()
     {
+        $close = $this->class->reg_close();
+
+        if ($close == 'off') exit('register close');
+
         $account = input('referee_account');
 
         return $this->class->view('register', ['referee_account' => $account]);

@@ -16,6 +16,8 @@ class Recharge extends Controller
         parent::__construct($request);
 
         $this->class = new \classes\index\Recharge();
+
+        $this->class->web_close();
     }
 
     public function save()

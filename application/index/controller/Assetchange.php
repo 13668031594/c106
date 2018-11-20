@@ -14,6 +14,8 @@ class AssetChange extends Controller
         parent::__construct($request);
 
         $this->class = new \classes\index\AssetChange();
+
+        $this->class->web_close();
     }
 
     public function asset_out()

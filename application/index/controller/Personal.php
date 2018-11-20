@@ -23,6 +23,8 @@ class Personal extends Controller
 
         $this->class = new \classes\index\Index();
 
+        $this->class->web_close();
+
         session('floor', 'self');
     }
 
@@ -122,6 +124,7 @@ class Personal extends Controller
         return $this->class->success();
     }
 
+    //撤销激活订单
     public function act_out($id)
     {
         $this->class->out($id);
