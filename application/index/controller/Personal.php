@@ -137,6 +137,8 @@ class Personal extends Controller
     {
         $result = $this->class->pay_note();
 
+        $result['member'] = $this->class->member;
+
         return $this->class->view('pay-note',$result);
     }
 

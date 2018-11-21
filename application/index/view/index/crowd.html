@@ -16,14 +16,14 @@
     <form id="forms" action="/index-crowd" method="post">
         <div class="weui-cells weui-cells_form">
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">拥有{$webAliasJpj}</label></div>
+                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">拥有{$webAliasJpj}</label></div>
                 <div class="weui-cell__bd">
                     <span>{$member['jpj']}</span>
                 </div>
             </div>
 
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">现金:{$webAliasJpj}</label></div>
+                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">现金:{$webAliasJpj}</label></div>
                 <div class="weui-cell__bd">
                     <span>{$webAjAmount}:{$webAjJpj}</span>
                     <input type="hidden" name="webAjAmount" value="{$webAjAmount}">
@@ -32,14 +32,14 @@
             </div>
 
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">众筹金额</label></div>
+                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">众筹金额</label></div>
                 <div class="weui-cell__bd">
                     <input class="weui-input num" type="number" name="amount" value="" placeholder="请输入众筹金额">
                 </div>
             </div>
 
             <div class="weui-cell">
-                <div class="weui-cell__hd"><label class="weui-label">支付密码</label></div>
+                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">支付密码</label></div>
                 <div class="weui-cell__bd">
                     <input class="weui-input pass" type="password" name="pay_pass" value="" placeholder="请输入支付密码">
                 </div>
@@ -63,10 +63,14 @@
     <div id="agreement" class="weui-popup__container">
         <div class="weui-popup__overlay"></div>
         <div class="weui-popup__modal">
-            {$content}
+            <div style="padding: 1rem 1rem 5rem 1rem;">
+                {$content}
+            </div>
 
             <div class="pop-btn">
-                <button type="button" class='weui-btn weui-btn_plain-primary close-popup'>关闭</button>
+                <div style="position: fixed; left: 0; bottom: 0; height: 4.5rem; width: 100%">
+                    <button type="button" class='weui-btn weui-btn_plain-primary close-popup'>关闭</button>
+                </div>
             </div>
         </div>
     </div>
