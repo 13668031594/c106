@@ -80,7 +80,7 @@
             loading = false;
             $.ajax({
                 type: 'get',
-                url: '/index-pay-note-table',
+                url: '/index-pay-note-table?page='+page,
                 dataType: 'json',
                 beforeSend: function(){
                     $('.weui-loadmore').show();
