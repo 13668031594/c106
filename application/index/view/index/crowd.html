@@ -60,19 +60,11 @@
     </form>
 
     <!-- 协议 -->
-    <div id="agreement" class="weui-popup__container">
-        <div class="weui-popup__overlay"></div>
-        <div class="weui-popup__modal">
-            <div style="padding: 1rem 1rem 5rem 1rem;">
-                {$content}
+    <div id="agreement" class="weui-popup__container" style="overflow: auto; background: white; padding: 1rem 1.5rem 4.5rem 1.5rem; width: 100%; box-sizing: border-box;">
+            {$content}
+            <div style="position: fixed; z-index: 1000; left: 0; bottom: 0; width: 100%;">
+                <button type="button" class='weui-btn weui-btn_plain-primary close-popup' onclick="$('#agreement').hide();" style="height: 4rem; background: white;">关闭</button>
             </div>
-
-            <div class="pop-btn">
-                <div style="position: fixed; left: 0; bottom: 0; height: 4.5rem; width: 100%; background: #efeff4;">
-                    <button type="button" class='weui-btn weui-btn_plain-primary close-popup'>关闭</button>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 {include file="index@Index/floor"}

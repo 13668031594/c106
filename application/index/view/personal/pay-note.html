@@ -25,32 +25,33 @@
         </li>
     </ul>
 
-
-    <div class="weui-panel weui-panel_access">
-        {foreach $message as $v}
-        <div class="weui-panel__hd">{$v['trade_type']}：{$v['order_number']}</div>
-        <div class="weui-panel__bd">
-            <!-- 一项开始 -->
-            <div class="weui-media-box weui-media-box_appmsg">
-                <div class="weui-media-box__bd">
-                    <div class="list-author-time">
-                        <div class="list-time">
-                            <span>时间：</span>
-                            <span>{$v['make_time']}</span>
+    {foreach $message as $v}
+    <div id="panel-content">
+        <div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">{$v['trade_type']}：{$v['order_number']}</div>
+            <div class="weui-panel__bd">
+                <!-- 一项开始 -->
+                <div class="weui-media-box weui-media-box_appmsg">
+                    <div class="weui-media-box__bd">
+                        <div class="list-author-time">
+                            <div class="list-time">
+                                <span>时间：</span>
+                                <span>{$v['make_time']}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="list-author-time">
-                        <div class="list-time">
-                            <span>金额：</span>
-                            <span>{$v['total']}</span>
+                        <div class="list-author-time">
+                            <div class="list-time">
+                                <span>金额：</span>
+                                <span>{$v['total']}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- 一项结束 -->
             </div>
-            <!-- 一项结束 -->
         </div>
-        {/foreach}
     </div>
+    {/foreach}
 
 
     <!-- 加载 -->
@@ -93,14 +94,14 @@
                         if( list.length > 0 ){
                             var str = '';
                             list.forEach(function( i ){
-                                str += '<div class="weui-panel__hd">' + i.trade_type +'：' + i.order_number +'</div>' +
+                                str += '<div class="weui-panel weui-panel_access"><div class="weui-panel__hd">' + i.trade_type +'：' + i.order_number +'</div>' +
                                     '<div class="weui-panel__bd"><div class="weui-media-box weui-media-box_appmsg"><div class="weui-media-box__bd">' +
                                     '<div class="list-author-time">' +
                                     '<div class="list-time"><span>时间：</span><span>'+ i.make_time +'</span></div></div>' +
                                     '<div class="list-author-time">' +
-                                    '<div class="list-time"><span>金额：</span><span>'+ i.total +'</span></div></div></div></div></div>';
+                                    '<div class="list-time"><span>金额：</span><span>'+ i.total +'</span></div></div></div></div></div></div>';
                             });
-                            $(".weui-panel_access").append(str);
+                            $("#panel-content").append(str);
                         }
                         page ++;
                         if( page > all ){
