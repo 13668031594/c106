@@ -15,33 +15,43 @@
 <div class="content">
     <form id="forms" action="/index-crowd" method="post">
         <div class="weui-cells weui-cells_form">
-            <div class="weui-cell">
-                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">拥有{$webAliasJpj}</label></div>
-                <div class="weui-cell__bd">
-                    <span>{$member['jpj']}</span>
+            <div class="weui-cells__title">拥有{$webAliasJpj}</div>
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <span>{$member['jpj']}</span>
+                        <!--<input class="weui-input" type="text" placeholder="请输入文本">-->
+                    </div>
                 </div>
             </div>
 
-            <div class="weui-cell">
-                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">现金:{$webAliasJpj}</label></div>
-                <div class="weui-cell__bd">
-                    <span>{$webAjAmount}:{$webAjJpj}</span>
-                    <input type="hidden" name="webAjAmount" value="{$webAjAmount}">
-                    <input type="hidden" name="webAjJpj" value="{$webAjJpj}">
+            <div class="weui-cells__title">现金:{$webAliasJpj}</div>
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <span>{$webAjAmount}:{$webAjJpj}</span>
+                        <!--<input class="weui-input" type="text" placeholder="请输入文本">-->
+                        <input type="hidden" name="webAjAmount" value="{$webAjAmount}">
+                        <input type="hidden" name="webAjJpj" value="{$webAjJpj}">
+                    </div>
                 </div>
             </div>
 
-            <div class="weui-cell">
-                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">众筹金额</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input num" type="number" name="amount" value="" placeholder="请输入众筹金额">
+            <div class="weui-cells__title">众筹金额</div>
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <input class="weui-input num" type="number" name="amount" value="" placeholder="请输入众筹金额">
+                    </div>
                 </div>
             </div>
 
-            <div class="weui-cell">
-                <div class="weui-cell__hd" style="width: 110px;"><label class="weui-label">支付密码</label></div>
-                <div class="weui-cell__bd">
-                    <input class="weui-input pass" type="password" name="pay_pass" value="" placeholder="请输入支付密码">
+            <div class="weui-cells__title">支付密码</div>
+            <div class="weui-cells">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <input class="weui-input pass" type="password" name="pay_pass" value="" placeholder="请输入支付密码">
+                    </div>
                 </div>
             </div>
         </div>
