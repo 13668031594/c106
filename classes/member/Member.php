@@ -57,6 +57,7 @@ class Member extends FirstClass implements ListInterface
         $model->nickname = input('nickname');
         $model->status = input('status');
         $model->identify = input('identify');
+        $model->power = input('power');
         $model->password = md5(input('password'));
         $model->pay_pass = md5(input('pay_pass'));
         $model->created_type = 1;
@@ -88,6 +89,7 @@ class Member extends FirstClass implements ListInterface
         $model->nickname = input('nickname');
         $model->status = input('status');
         $model->identify = input('identify');
+        $model->power = input('power');
         if (input('password') != 'w!c@n#m$b%y^') $model->password = md5(input('password'));
         if (input('pay_pass') != 'w!c@n#m$b%y^') $model->pay_pass = md5(input('pay_pass'));
         $model->updated_at = date('Y-m-d H:i:s');
@@ -110,7 +112,8 @@ class Member extends FirstClass implements ListInterface
             'pay_pass' => 'require|min:6|max:20',
 //            'phone' => 'min:8|max:15',
             'status' => 'require',
-            'identify' => 'require'
+            'identify' => 'require',
+            'power' => 'require'
         ];
 
         $file = [
@@ -121,6 +124,7 @@ class Member extends FirstClass implements ListInterface
             'pay_pass' => '支付密码',
             'status' => '状态',
             'identify' => '身份',
+            'power' => '特权等级',
 //            'phone' => '联系电话',
         ];
 
@@ -129,9 +133,11 @@ class Member extends FirstClass implements ListInterface
 
         $identify = [0, 1];
         $status = [0, 1, 2];
+        $power = [0,1];
 
         if (!in_array(input('identify'), $identify)) parent::ajax_exception(502, '身份错误');
         if (!in_array(input('status'), $status)) parent::ajax_exception(502, '状态错误');
+        if (!in_array(input('power'), $power)) parent::ajax_exception(502, '特权等级错误');
     }
 
     public function validator_update($id)
@@ -142,6 +148,7 @@ class Member extends FirstClass implements ListInterface
             'pay_pass' => 'require|min:6|max:20',
             'status' => 'require',
             'identify' => 'require',
+            'power' => 'require'
         ];
 
         $file = [
@@ -152,6 +159,7 @@ class Member extends FirstClass implements ListInterface
             'status' => '状态',
             'identify' => '身份',
 //            'phone' => '联系电话',
+            'power' => '特权等级',
         ];
 
         $result = parent::validator(input(), $rule, [], $file);
@@ -159,9 +167,11 @@ class Member extends FirstClass implements ListInterface
 
         $identify = [0, 1];
         $status = [0, 1, 2];
+        $power = [0,1];
 
         if (!in_array(input('identify'), $identify)) parent::ajax_exception(503, '身份错误');
         if (!in_array(input('status'), $status)) parent::ajax_exception(503, '状态错误');
+        if (!in_array(input('power'), $power)) parent::ajax_exception(502, '特权等级错误');
     }
 
     public function validator_delete($id)

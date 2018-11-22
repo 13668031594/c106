@@ -118,6 +118,15 @@
                     }
                 }
                 },
+                {
+                    field: 'power', width: 80, title: '团队长', templet: function (d) {
+                    if (d.power == 1) {
+                        return '<span class="layui-badge layui-bg-cyan">是</span>'
+                    } else {
+                        return '<span class="layui-badge layui-badge-rim">否</span>';
+                    }
+                }
+                },
                 {field: 'account', width: 120,title: '账号'},
                 {field: 'nickname', title: '昵称'},
                 {field: 'asset_act', width: 130, title: '激活资产',sort:true},

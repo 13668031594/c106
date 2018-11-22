@@ -30,6 +30,29 @@
             </div>
         </div>
 
+        {if $member['power'] == '1'}
+        <div class="weui-cells weui-cells_radio">
+            <label class="weui-cell weui-check__label" for="x15">
+                <div class="weui-cell__bd">
+                    <p>转为{$webAliasAsset}</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check" id="x15" name="radio" value="0" checked="checked">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+            <label class="weui-cell weui-check__label" for="x14">
+                <div class="weui-cell__bd">
+                    <p>转为激活{$webAliasAsset}</p>
+                </div>
+                <div class="weui-cell__ft">
+                    <input type="radio" class="weui-check" id="x14" name="radio" value="1">
+                    <span class="weui-icon-checked"></span>
+                </div>
+            </label>
+        </div>
+        {/if}
+
         <div class="form-btn">
             <button class="weui-btn weui-btn_primary" type="submit">确认</button>
         </div>
@@ -43,11 +66,11 @@
         location.href = '/';
     });
 
-    $('#forms').off('submit').on('submit', function(){
-        $.confirm("确定要执行此操作吗？", function() {
+    $('#forms').off('submit').on('submit', function () {
+        $.confirm("确定要执行此操作吗？", function () {
             //点击确认后的回调函数
             Ajax($('#forms'));
-        }, function() {
+        }, function () {
             //点击取消后的回调函数
         });
         return false;

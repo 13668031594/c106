@@ -73,7 +73,7 @@ class Adv extends FirstClass implements ListInterface
         if (is_null($model)) parent::ajax_exception(601, ['广告不存在']);
 
         $image = new AdvImages();
-        $image = $image->where('id',input('imageId'))->find();
+        $image = $image->where('id', input('imageId'))->find();
 
         $model->title = input('title');
         $model->image = $image->id;
@@ -86,12 +86,14 @@ class Adv extends FirstClass implements ListInterface
         $image->save();
 
         $images = new AdvImages();
-        $images->where('adv','=',$model->id)->where('id','<>',$image->id)->update(['adv' => null]);
+        $images->where('adv', '=', $model->id)->where('id', '<>', $image->id)->update(['adv' => null]);
     }
 
     public function delete($id)
     {
         $this->model->whereIn('id', $id)->delete();
+        $image = new AdvImages();
+        $image->whereIn('adv', $id)->update(['adv' => null]);
     }
 
     public function validator_save()
@@ -175,13 +177,13 @@ class Adv extends FirstClass implements ListInterface
     //删除过期图片
     public function image_delete()
     {
-        $date = date('Y-m-d H:i:s',strtotime('-1 day'));
+        $date = date('Y-m-d H:i:s', strtotime('-1 day'));
 
         $model = new AdvImages();
 
         $result = $model->where('created_at', '<', $date)->where('adv', null)->select();
 
-        if (count($result) > 0)foreach ($result as $v) {
+        if (count($result) > 0) foreach ($result as $v) {
 //            unlink(substr($v->location, 1))
             if (!is_null($v->location) && is_file($v->location)) unlink($v->location);
         }

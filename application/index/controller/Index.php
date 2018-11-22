@@ -174,7 +174,7 @@ class Index extends Controller
     {
         $out_man = $this->class->out_man($id);
 
-        return $this->class->view('roll-out', ['out_man' => $out_man]);
+        return $this->class->view('roll-out', ['out_man' => $out_man,'member' => $this->class->member]);
     }
 
     //转换

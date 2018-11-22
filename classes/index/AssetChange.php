@@ -63,6 +63,9 @@ class AssetChange extends FirstClass
 
         if (is_null($this->in_member)) parent::ajax_exception(000, '转出会员不存在');
         if ($this->in_member->status >= '2') parent::ajax_exception(000, '该会员已被冻结或禁用');
+
+        $radio = input('radio');
+        if (($this->member['power'] == '1') && !in_array($radio, [0, 1])) parent::ajax_exception(000, '请选择转出后类型');
     }
 
     public function out()
@@ -71,33 +74,27 @@ class AssetChange extends FirstClass
 
         $setting = new Setting();
         $set = $setting->index();
+        $radio = input('radio');
 
         $record = [];
         $update = [];
-
-        $number = input('number');//转移资产
-        $asset = number_format($number / $set['webJaJpj'] * $set['webJaAsset'], 2, '.', '');
-
-        $member = new Member();//会员模型
 
         $time = time();
         $date = date('Y-m-d H:i:s', $time);
 
         //转出会员
+        $member = new Member();//会员模型
         $member = $member->where('id', '=', $this->member['id'])->find();
         $in_member = $this->in_member;
+
+        $number = input('number');//转移资产
+        $asset = number_format($number / $set['webJaJpj'] * $set['webJaAsset'], 2, '.', '');
 
         //转出激活资产
         $update[$member->id]['id'] = $member->id;
         $update[$member->id]['asset'] = $member->asset;
         $update[$member->id]['asset_act'] = $member->asset_act - $number;
         $update[$member->id]['asset_all'] = $member->asset_all;
-
-        //转入未激活资产
-        $update[$in_member->id]['id'] = $in_member->id;
-        $update[$in_member->id]['asset'] = $in_member->asset + $asset;
-        $update[$in_member->id]['asset_act'] = $in_member->asset_act;
-        $update[$in_member->id]['asset_all'] = $in_member->asset_all + $asset;
 
         $records['member_id'] = $member->id;
         $records['account'] = $member->account;
@@ -115,17 +112,23 @@ class AssetChange extends FirstClass
         $records['content'] = '转出『激活' . $this->asset . '』' . $number . ',转入账号：' . $in_member->account;
         $records['other'] = $member->id . '_' . $time;
         $records['created_at'] = $date;
+        if (($member['power'] == '1') && ($radio == '1')) {
+            $records['content'] .= '。（转为『激活' . $this->asset . '』）';
+        }
+
         $record[] = $records;
+
+        //转入未激活资产
+        $update[$in_member->id]['id'] = $in_member->id;
+        $update[$in_member->id]['asset'] = $in_member->asset + $asset;
+        $update[$in_member->id]['asset_act'] = $in_member->asset_act;
+        $update[$in_member->id]['asset_all'] = $in_member->asset_all + $asset;
 
         $records['member_id'] = $in_member->id;
         $records['account'] = $in_member->account;
         $records['nickname'] = $in_member->nickname;
         $records['integral_now'] = $in_member->integral;
         $records['integral_all'] = $in_member->integral_all;
-        $records['asset'] = $asset;
-        $records['asset_now'] = $in_member->asset + $asset;
-        $records['asset_act'] = 0;
-        $records['asset_act_now'] = $in_member->asset_act;
         $records['asset_all'] = $in_member->asset_all + $asset;
         $records['jpj_now'] = $in_member->jpj;
         $records['jpj_all'] = $in_member->jpj_all;
@@ -133,6 +136,17 @@ class AssetChange extends FirstClass
         $records['content'] = '转入『' . $this->asset . '』' . $asset . ',转出账号：' . $member->account;
         $records['other'] = $member->id . '_' . $time;
         $records['created_at'] = $date;
+        if (($member['power'] == '1') && ($radio == '1')) {
+
+            $update[$in_member->id]['asset'] = $in_member->asset;
+            $update[$in_member->id]['asset_act'] = $in_member->asset_act + $number;
+            $update[$in_member->id]['asset_all'] = $in_member->asset_all + $number;
+            $records['asset'] = 0;
+            $records['asset_now'] = $in_member->asset;
+            $records['asset_act'] = $number;
+            $records['asset_act_now'] = $in_member->asset_act + $number;
+            $records['content'] = '转入『激活' . $this->asset . '』' . $number . ',转出账号：' . $member->account;
+        }
         $record[] = $records;
 
         $result = self::fenyong($in_member->families, $asset, $record, $update, $in_member, $member, $date, $time);

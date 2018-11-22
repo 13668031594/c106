@@ -52,4 +52,6 @@ class Member extends Migrator
     {
         $this->dropTable('member');
     }
+
+
 }

@@ -99,6 +99,20 @@
                 </div>
             </div>
 
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label" >团队长</label>
+                    <div class="layui-input-inline" style="width:80px;">
+                        <select name="power" lay-verify="">
+                            <option value="0" {if isset($member) && ($member[
+                            'power'] == 0)}selected{/if}>否</option>
+                            <option value="1" {if isset($member) && ($member[
+                            'power'] == 1)}selected{/if}>是</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             {if isset($member)}
             <div class="layui-form-item">
                 <div class="layui-input-block">
