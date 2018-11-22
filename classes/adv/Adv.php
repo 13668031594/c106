@@ -184,8 +184,8 @@ class Adv extends FirstClass implements ListInterface
         $result = $model->where('created_at', '<', $date)->where('adv', null)->select();
 
         if (count($result) > 0) foreach ($result as $v) {
-//            unlink(substr($v->location, 1))
-            if (!is_null($v->location) && is_file($v->location)) unlink($v->location);
+
+            if (!is_null($v->location) && file_exists(substr($v->location, 1))) unlink(substr($v->location, 1));
         }
 
         $model = new AdvImages();

@@ -24,7 +24,7 @@ class StorageClass
     //获取
     public function get()
     {
-        if (!is_file($this->url)) return ['code' => '1001', 'message' => '没有找到该文件'];//不是文件
+        if (!file_exists($this->url)) return ['code' => '1001', 'message' => '没有找到该文件'];//不是文件
 
         $file = fopen($this->url, 'r');//打开文件
 
