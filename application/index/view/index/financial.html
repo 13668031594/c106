@@ -7,15 +7,15 @@
 <div class="navigation">
     <!-- 选中class：nav-item-choice -->
     <a href="/index-financial?type=1" class="nav-item {if $type == '1'}nav-item-choice{/if}">{$webAliasAsset}</a>
-    <a href="/index-financial?type=2" class="nav-item {if $type == '2'}nav-item-choice{/if}">{$webAliasPoint}</a>
+    <!--<a href="/index-financial?type=2" class="nav-item {if $type == '2'}nav-item-choice{/if}">{$webAliasPoint}</a>-->
     <a href="/index-financial?type=3" class="nav-item {if $type == '3'}nav-item-choice{/if}">{$webAliasJpj}</a>
 </div>
 
 <div class="weui-panel weui-panel_access">
     {if $type == '1'}
     <div class="weui-panel__hd">{$webAliasAsset}记录</div>
-    {elseif $type == '2'}
-    <div class="weui-panel__hd">{$webAliasPoint}记录</div>
+    <!--{elseif $type == '2'}
+    <div class="weui-panel__hd">{$webAliasPoint}记录</div>-->
     {else/}
     <div class="weui-panel__hd">{$webAliasJpj}记录</div>
     {/if}

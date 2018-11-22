@@ -163,6 +163,12 @@ class AssetChange extends FirstClass
 
     public function fenyong($families = null, $number, $record = [], $update = [], $in_member, $member, $date, $time)
     {
+        //分佣已经关闭
+        return [
+            'record' => $record,
+            'update' => $update
+        ];
+
         //没有上级
         if (empty($families)) return [
             'record' => $record,

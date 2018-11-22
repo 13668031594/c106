@@ -65,7 +65,7 @@ class Login extends Controller
         $this->class->refresh_login_member($member->id, $login_ass);
 
         //首次登录
-        $this->class->first_login($member);
+//        $this->class->first_login($member);
 
         //绑定微信
         $this->class->wechat_banding($member->id);

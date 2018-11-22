@@ -121,11 +121,11 @@ class Adv extends FirstClass implements ListInterface
             'title' => 'require|min:1|max:255',
             'describe' => 'require|min:1|max:255',
             'show' => 'require',
-            'imageId' => 'require|unique:adv,image,' . $id . ',id'
+            'imageId' => 'require'
         ];
 
         $message = [
-            'imageId.unique' => '不能使用其他广告中的图片'
+//            'imageId.unique' => '不能使用其他广告中的图片'
         ];
 
         $file = [
