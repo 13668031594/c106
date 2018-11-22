@@ -120,7 +120,7 @@ class FirstClass
         $login_ip = $_SERVER["REMOTE_ADDR"];
 
         //登录ip不同，证明在其他地方登录，跳转至登录页面
-        if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
+//        if ($login_ip != $member['login_ip']) self::redirect_exception('/index-logout');
 
         //登录地点验证
         if ($login_ass != $member['login_ass']) self::redirect_exception('/index-logout');
