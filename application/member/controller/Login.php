@@ -208,7 +208,7 @@ class Login extends Controller
             $order = $this->class->change_active($model->order_number);
 
             //调用接口
-            $this->class->c104_interface($order);
+            if ($order) $this->class->c104_interface($order);
         }
 
         Db::commit();

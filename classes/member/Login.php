@@ -408,15 +408,16 @@ class Login extends FirstClass
         //寻找订单
         $recharge = new \app\recharge\model\Recharge();
         $recharge = $recharge->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
-        if (is_null($recharge)) return;
+        if (is_null($recharge)) return false;
 
         //修改会员状态
         $member = new \app\member\model\Member();
         $member = $member->where('id', '=', $recharge->member_id)->find();
-        if (is_null($member)) return;
+        if (is_null($member)) return false;
         $member->jpj += $recharge->jpj;
         $member->jpj_all += $recharge->jpj;
         $member->total += $recharge->total;
+        $member->recharge += 1;
         $member->save();
 
         //时间
@@ -459,14 +460,15 @@ class Login extends FirstClass
         //寻找订单
         $active = new Active();
         $active = $active->where('order_number', '=', $order_number)->where('order_status', '=', '10')->find();
-        if (is_null($active)) return;
+        if (is_null($active)) return false;
 
         //修改会员状态
         $member = new \app\member\model\Member();
         $member = $member->where('id', '=', $active->member_id)->find();
-        if (is_null($member)) return;
+        if (is_null($member)) return false;
         $member->total += $active->total;
         $member->asset_act += $active->asset;
+        $member->active += 1;
         $member->save();
 
         //时间
