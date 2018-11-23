@@ -15,6 +15,8 @@ use app\member\model\Sms;
 use classes\FirstClass;
 use classes\setting\Setting;
 use classes\vendor\StorageClass;
+use classes\vendor\Wechat;
+use think\Model;
 
 class Login extends FirstClass
 {
@@ -499,6 +501,8 @@ class Login extends FirstClass
         $record->jpj_now = $member->jpj;
         $record->jpj_all = $member->jpj_all;
         $record->save();
+
+        return $active;
     }
 
     /**
@@ -750,5 +754,37 @@ class Login extends FirstClass
         $set = $setting->index();
 
         return $set['userRegisterSwitch'];
+    }
+
+    /**
+     * 调用c104微信消息接口
+     *
+     * @param Model $order
+     */
+    public function c104_interface(Model $order)
+    {
+        $message = '会员：' . $order->member_nickname . '，激活订单（订单号：' . $order->order_number . '）成功付款，付款金额：' . $order->total;
+
+        $url = 'http://family-api.ythx123.com/api/c106-message?message=' . $message;
+
+        $class = new Wechat();
+
+        $class->url_get($url);
+    }
+
+    /**
+     * 调用c104微信消息接口
+     *
+     * @param Model $order
+     */
+    public function c104_interface_test()
+    {
+        $message = '会员：，激活订单（订单号：）成功付款，付款金额：';
+
+        $url = 'http://family-api.ythx123.com/api/c106-message?message=' . $message;
+
+        $class = new Wechat();
+
+        $class->url_get($url);
     }
 }

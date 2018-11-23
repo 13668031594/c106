@@ -11,6 +11,8 @@
 
 use think\Route;
 
+Route::get('test','member/Login/test');
+
 //后台登录页面
 Route::get('login', 'master/Login/view');
 

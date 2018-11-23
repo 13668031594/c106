@@ -37,7 +37,7 @@ class Login extends Controller
         $account = $this->class->account();
 
         //视图
-        return $this->class->view('login', ['account' => $account,'reg_close' => $reg_close]);
+        return $this->class->view('login', ['account' => $account, 'reg_close' => $reg_close]);
     }
 
     //登录方法
@@ -205,7 +205,10 @@ class Login extends Controller
         if (($array['return_code'] == 'SUCCESS') && ($array['result_code'] == 'SUCCESS')) {
 
             //付款成功
-            $this->class->change_active($model->order_number);
+            $order = $this->class->change_active($model->order_number);
+
+            //调用接口
+            $this->class->c104_interface($order);
         }
 
         Db::commit();
@@ -266,5 +269,10 @@ class Login extends Controller
         $this->class->reset();
 
         return $this->class->success();
+    }
+
+    public function test()
+    {
+        $this->class->c104_interface_test();
     }
 }

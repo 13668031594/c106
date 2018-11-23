@@ -268,7 +268,7 @@ class Index extends FirstClass
     public function validator_act()
     {
         $rule = [
-            'amount' => 'require|integer|between:1,100000000',
+            'amount' => 'require|integer|between:500,100000000',
             'pay_pass' => 'require',
             'payActAllot' => 'require',
         ];
