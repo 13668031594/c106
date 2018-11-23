@@ -499,4 +499,24 @@ class Index extends FirstClass
 
         return $result;
     }
+
+    public function team($member_id)
+    {
+        $model = new \app\member\model\Member();
+
+        $result = $model->where('referee_id','=',$member_id)->column('id,phone,nickname,active');
+
+        $member = [];
+        $i = 0;
+
+        foreach ($result as $v){
+
+            $member[$i]['id'] = $v['id'];
+            $member[$i]['phone'] = $v['phone'];
+            $member[$i]['nickname'] = $v['nickname'];
+            $member[$i]['active'] = empty($v['active']) ? '未激活' : '激活';
+        }
+
+        return $member;
+    }
 }

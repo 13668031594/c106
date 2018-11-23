@@ -161,3 +161,5 @@ Route::get('index-act-info/:id', 'index/Personal/info');
 Route::get('index-act-out/:id', 'index/Personal/act_out');
 Route::get('index-pay-note', 'index/Personal/pay_note');
 Route::get('index-pay-note-table', 'index/Personal/pay_note_table');
+Route::get('index-team', 'index/Personal/team');
+Route::get('index-team-table/:id', 'index/Personal/team_table');

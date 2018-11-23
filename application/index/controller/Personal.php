@@ -139,7 +139,7 @@ class Personal extends Controller
 
         $result['member'] = $this->class->member;
 
-        return $this->class->view('pay-note',$result);
+        return $this->class->view('pay-note', $result);
     }
 
     //财务翻页
@@ -148,5 +148,19 @@ class Personal extends Controller
         $result = $this->class->pay_note();
 
         return $this->class->table($result);
+    }
+
+    public function team()
+    {
+        $team = $this->class->team($this->class->member['id']);
+
+        return $this->class->view('team', ['team' => $team,'self' => $this->class->member]);
+    }
+
+    public function team_table($id)
+    {
+        $team = $this->class->team($id);
+
+        return $this->class->table(['message' => ['list' => $team]]);
     }
 }
