@@ -573,7 +573,7 @@ input[type='checkbox'], input[type='radio'] {
     display: -ms-flexbox;
     display: flex; }
     .personal .personal-integral > li {
-      width: 33.3%;
+      width: 50%;
       box-sizing: border-box;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box; }
