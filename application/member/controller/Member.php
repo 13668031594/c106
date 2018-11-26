@@ -184,7 +184,8 @@ class Member extends Controller
         $result = $this->class->team($id);
 
         $result['member'] = $member;
-
+//dump($result);
+//exit;
         return $this->class->view('team',$result);
     }
 }

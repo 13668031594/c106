@@ -150,13 +150,24 @@ class Personal extends Controller
         return $this->class->table($result);
     }
 
+    //团队页面
     public function team()
     {
         $team = $this->class->team($this->class->member['id']);
 
-        return $this->class->view('team', ['team' => $team,'self' => $this->class->member]);
+        $total = $this->class->team_total($this->class->member['id']);
+
+        $result = [
+            'team' => $team,
+            'self' => $this->class->member,
+        ];
+
+        $result = array_merge($result,$total);
+
+        return $this->class->view('team', $result);
     }
 
+    //团队数据
     public function team_table($id)
     {
         $team = $this->class->team($id);

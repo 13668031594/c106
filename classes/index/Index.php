@@ -504,19 +504,34 @@ class Index extends FirstClass
     {
         $model = new \app\member\model\Member();
 
-        $result = $model->where('referee_id','=',$member_id)->column('id,phone,nickname,active');
+        $result = $model->where('referee_id', '=', $member_id)->column('id,phone,nickname,active');
 
         $member = [];
         $i = 0;
 
-        foreach ($result as $v){
+        foreach ($result as $v) {
 
             $member[$i]['id'] = $v['id'];
             $member[$i]['phone'] = $v['phone'];
             $member[$i]['nickname'] = $v['nickname'];
             $member[$i]['active'] = empty($v['active']) ? '未激活' : '激活';
+
+            $i++;
         }
 
         return $member;
+    }
+
+    public function team_total($member_id)
+    {
+        $model = new \app\member\model\Member();
+        $total = $model->where('families','like','%'.$member_id.'%')->sum('total');
+
+        $number = $model->where('families','like','%'.$member_id.'%')->count();
+
+        return [
+            'total' => $total,
+            'number' => $number
+        ];
     }
 }
