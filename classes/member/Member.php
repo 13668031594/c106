@@ -212,7 +212,7 @@ class Member extends FirstClass implements ListInterface
         $rule = [
             'type' => 'require',
             'assetType' => 'requireIf:type,0',
-            'number' => 'require|integer|between:0.01,100000000',
+            'number' => 'require|integer|between:-1000000,100000000',
         ];
 
         $file = [
@@ -229,14 +229,15 @@ class Member extends FirstClass implements ListInterface
     {
         Db::startTrans();
 
+        //获取变化数值
+        $number = input('number');
+        if ($number == '0')parent::ajax_exception(000,'充值数量不能为零');
+
         //寻找会员模型
         $member = $this->member->where('id', '=', input('id'))->find();
 
         //判断
         if (is_null($member)) parent::ajax_exception(506, '会员不存在');
-
-        //获取变化数值
-        $number = input('number');
 
         //获取默认设定
         $setting = new Setting();
@@ -247,7 +248,13 @@ class Member extends FirstClass implements ListInterface
         $record->member_id = $member->id;
         $record->account = $member->account;
         $record->nickname = $member->nickname;
-        $record->content = '管理员为您充值『';
+        if ($number > 0){
+
+            $record->content = '管理员为您充值『';
+        }else{
+
+            $record->content = '管理员扣除了您的『';
+        }
 
         //按类型充值
         switch (input('type')) {
@@ -260,12 +267,14 @@ class Member extends FirstClass implements ListInterface
 
                     $record->asset_act = $number;
                     $record->content .= '激活' . $set['webAliasAsset'];
+                    if ($member->asset_act < 0)parent::ajax_exception(000,'不得调整为负数');
                 } elseif ($type == '1') {
 
                     $member->asset += $number;
 
                     $record->asset = $number;
                     $record->content .= '未激活' . $set['webAliasAsset'];
+                    if ($member->asset < 0)parent::ajax_exception(000,'不得调整为负数');
                 } else {
 
                     parent::ajax_exception(508, '充值资产类型错误');
@@ -281,6 +290,7 @@ class Member extends FirstClass implements ListInterface
 
                 $record->integral = $number;
                 $record->content .= $set['webAliasPoint'];
+                if ($member->integral < 0)parent::ajax_exception(000,'不得调整为负数');
 
                 break;
             case '2':
@@ -290,6 +300,8 @@ class Member extends FirstClass implements ListInterface
 
                 $record->jpj = $number;
                 $record->content .= $set['webAliasJpj'];
+
+                if ($member->jpj < 0)parent::ajax_exception(000,'不得调整为负数');
 
                 break;
             default:

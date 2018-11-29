@@ -13,7 +13,7 @@ class ContrastArrays
     public function member_record()
     {
         return [
-            10 => '后台充值',
+            10 => '后台调整',
             20 => '直充订单',
             21 => '直充付款',
             30 => '激活订单',
