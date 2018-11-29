@@ -527,6 +527,7 @@ class Index extends FirstClass
         $model = new \app\member\model\Member();
         $total = $model->where('families','like','%'.$member_id.'%')->sum('total');
 
+        $model = new \app\member\model\Member();
         $number = $model->where('families','like','%'.$member_id.'%')->count();
 
         return [
