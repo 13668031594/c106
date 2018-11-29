@@ -159,7 +159,7 @@ class Active extends FirstClass
         $member = new Member();
         $member = $member->where('id', '=', $order['member_id'])->find();
         if (is_null($member)) return;
-        $member->total += $order['total'];
+//        $member->total += $order['total'];
         $member->asset += $order['asset'];
         $member->save();
 
