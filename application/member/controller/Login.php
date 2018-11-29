@@ -163,6 +163,7 @@ class Login extends Controller
         $array = $class->xml_to_array($xml);
 
         //添加支付记录
+        $array['trade_type'] = 'recharge';
         $model = $class->is_pay($array, $xml);
 
         //判断,已经添加过了
@@ -196,6 +197,7 @@ class Login extends Controller
         $array = $class->xml_to_array($xml);
 
         //添加支付记录
+        $array['trade_type'] = 'active';
         $model = $class->is_pay($array, $xml);
 
         //判断,已经添加过了
